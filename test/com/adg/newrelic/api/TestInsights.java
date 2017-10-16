@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,9 +15,21 @@ import org.junit.Test;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 public class TestInsights {
 
-	APIKeyset keys;
+	// Used to ensure the async work has completed
+	private CountDownLatch lock = new CountDownLatch(1);
+	private Long lCountAsync;
+	
+	// API keys we'll use for the tests
+	private APIKeyset keys;
+	
+	public static final String NRQL_QUERY = "SELECT count(*) FROM Transaction";
+	public static final long TIMEOUT = 10000;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -38,16 +52,47 @@ public class TestInsights {
 	}
 
 	@Test
-	public void testQuery() throws IOException {
-		String nrql = "SELECT count(*) FROM Transaction";
-		String sResponse = Insights.query(keys, nrql);
-//		System.out.println(sResponse);
+	public void testQuerySync() throws IOException {
+		Response rsp = Insights.querySync(keys, NRQL_QUERY);
 		
-		JSONObject jResponse = new JSONObject(sResponse);
+		// Convert the response into JSON and pull out the count
+		JSONObject jResponse = new JSONObject(rsp.body().string());
 		JSONArray jResults = jResponse.getJSONArray("results");
-		Integer iCount = jResults.getJSONObject(0).getInt("count");
-		assertNotNull(iCount);
-		System.out.println("Count is: " + iCount.toString());
+		Long lCount = jResults.getJSONObject(0).getLong("count");
+		assertNotNull(lCount);
+		System.out.println("[Sync] count is: " + lCount.toString());
+	}
+
+	@Test
+	public void testQueryAsync() throws IOException, InterruptedException {
+		
+		// Call the async version of the API
+		Insights.queryAsync(keys, NRQL_QUERY, new Callback() {
+
+			@Override
+			public void onFailure(Call call, IOException e) {
+				assertFalse(e.getMessage(), true);
+			}
+
+			@Override
+			public void onResponse(Call call, Response rsp) throws IOException {
+				
+				// Convert the response into JSON and pull out the count
+				JSONObject jResponse = new JSONObject(rsp.body().string());
+				JSONArray jResults = jResponse.getJSONArray("results");
+				lCountAsync = jResults.getJSONObject(0).getLong("count");
+				assertNotNull(lCountAsync);
+				System.out.println("[Async] count is: " + lCountAsync.toString());
+				
+				// Tell the lock this value has been returned
+				lock.countDown();
+			}
+		});
+		
+		// Wait for the lock to count down from the callback
+		lock.await(TIMEOUT, TimeUnit.MILLISECONDS);
+		assertNotNull(lCountAsync);
+		
 	}
 
 }

@@ -2,6 +2,7 @@ package com.adg.newrelic.api;
 
 import java.io.IOException;
 
+import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -15,8 +16,7 @@ public class Insights {
 	
 	private static OkHttpClient client = new OkHttpClient();
 
-	public static String query(APIKeyset keys, String nrql) throws IOException {
-		
+	private static Request makeQueryRequest(APIKeyset keys, String nrql) {
 		// Replace the accountId in the path
 		String path = URL_QUERY_PATH.replace("{accountId}", keys.getAccountId());
 		
@@ -33,12 +33,28 @@ public class Insights {
 			.url(url)
 			.addHeader("X-Query-Key", keys.getInsightsQueryKey())
 			.build();
+		return req;
+	}
+	
+	public static Response querySync(APIKeyset keys, String nrql) throws IOException {
 		
+		// Use the helper to make the Request object
+		Request req = makeQueryRequest(keys, nrql);
+		
+		// Synchronous call
 		Response rsp = client.newCall(req).execute();
 		if (!rsp.isSuccessful()) {
-			System.err.println("Error Status Code: " + rsp.code());
 			System.err.println("Error Message: " + rsp.message());
+			throw new IOException("Bad Status Code: " + rsp);
 		}
-		return rsp.body().string();
+		return rsp;
+	}
+	
+	public static void queryAsync(APIKeyset keys, String nrql, Callback cb) throws IOException {
+		// Use the helper to make the Request object
+		Request req = makeQueryRequest(keys, nrql);
+		
+		// Asynchronous call sends response to callback
+		client.newCall(req).enqueue(cb);
 	}
 }
