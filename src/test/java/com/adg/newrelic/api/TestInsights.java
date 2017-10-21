@@ -56,10 +56,10 @@ public class TestInsights {
 
 	@Test
 	public void testQuerySync() throws IOException {
-		Response rsp = insights.querySync(NRQL_QUERY);
+		String sResponse = insights.querySync(NRQL_QUERY);
 		
 		// Convert the response into JSON and pull out the count
-		JSONObject jResponse = new JSONObject(rsp.body().string());
+		JSONObject jResponse = new JSONObject(sResponse);
 		JSONArray jResults = jResponse.getJSONArray("results");
 		Long lCount = jResults.getJSONObject(0).getLong("count");
 		assertNotNull(lCount);

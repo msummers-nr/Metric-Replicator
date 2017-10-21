@@ -23,7 +23,9 @@ import okhttp3.Response;
 public class TestApplications {
 
 	private static final Logger log = LoggerFactory.getLogger(TestApplications.class);
-			
+	
+	private static final String METRIC_NAMES = "Agent/MetricsReported/count";
+
 	private APIKeyset keys;
 	private Applications applications; 
 	private static int appId;
@@ -48,10 +50,9 @@ public class TestApplications {
 
 	@Test
 	public void test1ListSync() throws IOException {
-		Response rsp = applications.listSync();
+		String sResponse = applications.listSync();
 		
 		// Convert the response into JSON and count the number of applications
-		String sResponse = rsp.body().string();
 		JSONObject jResponse = new JSONObject(sResponse);
 		JSONArray jApplications = jResponse.getJSONArray("applications");
 		log.info("Number of applications: " + jApplications.length());
@@ -67,10 +68,10 @@ public class TestApplications {
 	@Test
 	public void test2ShowSync() throws IOException {
 		// log.info("test2ShowSync(" + appId + ")");
-		Response rsp = applications.showSync(appId);
+		appId = 43192210;
+		String sResponse = applications.showSync(appId);
 		
 		// Convert the response into JSON and count the number of applications
-		String sResponse = rsp.body().string();
 		JSONObject jResponse = new JSONObject(sResponse);
 		int returnedAppId = jResponse.getJSONObject("application").getInt("id");
 		assertEquals(appId, returnedAppId);
@@ -78,15 +79,27 @@ public class TestApplications {
 
 	@Test
 	public void test3MetricNamesSync() throws IOException {
-		Response rsp = applications.metricNamesSync(appId, null);
+		String sResponse = applications.metricNamesSync(appId, null);
 		
 		// Convert the response into JSON and count the number of applications
-		String sResponse = rsp.body().string();
 		JSONObject jResponse = new JSONObject(sResponse);
 		JSONArray jMetrics = jResponse.getJSONArray("metrics");
 		log.info("Number of metrics: " + jMetrics.length());
 
 		// There should be more than 0 metrics
 		assertNotEquals(0, jMetrics.length());
+	}
+
+	@Test
+	public void test4MetricDataSync() throws IOException {
+		String sResponse = applications.metricDataSync(appId, METRIC_NAMES);
+		
+		// Convert the response into JSON and count the number of applications
+		JSONObject jResponse = new JSONObject(sResponse);
+		JSONArray metricsNotFound = jResponse.getJSONObject("metric_data").getJSONArray("metrics_not_found");
+		log.info("Count of metrics not found: " + metricsNotFound.length());
+
+		// There should be 0 metrics not found
+		assertEquals(0, metricsNotFound.length());
 	}
 }

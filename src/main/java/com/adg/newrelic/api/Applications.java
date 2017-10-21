@@ -1,6 +1,7 @@
 package com.adg.newrelic.api;
 
 import java.io.IOException;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public class Applications {
 	 * @return
 	 * @throws IOException
 	 */
-	public Response listSync() throws IOException {
+	public String listSync() throws IOException {
 		return listSync(null, null, null, null);
 	}
 	
@@ -49,13 +50,13 @@ public class Applications {
 	 * @return
 	 * @throws IOException
 	 */
-	public Response listSync(String filterName, String filterHost, String filterIds, String filterLanguage) throws IOException {
+	public String listSync(String filterName, String filterHost, String filterIds, String filterLanguage) throws IOException {
 		// Use the helper to make the Request object
 		Request req = makeListRequest(filterName, filterHost, filterIds, filterLanguage);
 		
 		// Synchronous call
 		Response rsp = Util.callSync(client, req);
-		return rsp;
+		return rsp.body().string();
 	}
 	
 	/**
@@ -65,24 +66,44 @@ public class Applications {
 	 * @return
 	 * @throws IOException
 	 */
-	public Response showSync(int appId) throws IOException {
+	public String showSync(int appId) throws IOException {
 		// User the helper to make the Request object
 		Request req = makeShowRequest(appId);
 		
 		// Synchronous call
 		Response rsp = Util.callSync(client, req);
-		return rsp;
+		return rsp.body().string();
 	}
 	
-	public Response metricNamesSync(int appId, String metricName) throws IOException {
+	/**
+	 * Call the Applications metricNames() synchronously for a given application id.
+	 * 
+	 * @param appId
+	 * @param filterName
+	 * @return
+	 * @throws IOException
+	 */
+	public String metricNamesSync(int appId, String filterName) throws IOException {
 		// Use the helper to make the Request object
-		Request req = makeMetricNamesRequest(appId, metricName);
+		Request req = makeMetricNamesRequest(appId, filterName);
 
 		// Synchronous call
 		Response rsp = Util.callSync(client, req);
-		return rsp;
+		return rsp.body().string();
 	}
-		
+	
+	/**
+	 * Call the Applications metricData() synchronously for a given appId
+	 */
+	public String metricDataSync(int appId, String metricNames) throws IOException {
+		// Use the helper to make the Request object
+		Request req = makeMetricDataRequest(appId, metricNames);
+
+		// Synchronous call
+		Response rsp = Util.callSync(client, req);
+		return rsp.body().string();
+	}
+
 	private Request makeListRequest(String filterName, String filterHost, String filterIds, String filterLanguage) {
 		
 		// Start the initial builder
@@ -123,7 +144,7 @@ public class Applications {
 		return req;
 	}
 
-	private Request makeMetricNamesRequest(int appId, String metricName) {
+	private Request makeMetricNamesRequest(int appId, String filterName) {
 		// Build the URL
 		String urlMetricName = URL_METRICS_PATH.replace("{application_id}", Integer.toString(appId));
 		HttpUrl.Builder urlBuilder = new HttpUrl.Builder()
@@ -132,8 +153,27 @@ public class Applications {
 			.addPathSegments(urlMetricName);
 		
 		// Add the optional parameters if they are provided
-		if (metricName != null) { urlBuilder.addQueryParameter("name", metricName); }
+		if (filterName != null) { urlBuilder.addQueryParameter("name", filterName); }
 		
+		// Create the request
+		Request req = new Request.Builder()
+			.url(urlBuilder.build())
+			.addHeader("X-Api-Key", keys.getRestKey())
+			.build();
+		return req;
+	}
+
+	private Request makeMetricDataRequest(int appId, String metricNames) {
+		// Build the URL
+		String urlMetricData = URL_DATA_PATH.replace("{application_id}", Integer.toString(appId));
+		HttpUrl.Builder urlBuilder = new HttpUrl.Builder()
+			.scheme(URL_SCHEME)
+			.host(URL_HOST)
+			.addPathSegments(urlMetricData);
+
+		// Add the optional parameters if they are provided
+		if (metricNames != null) { urlBuilder.addEncodedQueryParameter("names[]", metricNames); }
+
 		// Create the request
 		Request req = new Request.Builder()
 			.url(urlBuilder.build())

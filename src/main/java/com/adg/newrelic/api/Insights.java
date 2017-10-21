@@ -47,13 +47,14 @@ public class Insights {
 		return req;
 	}
 	
-	public Response querySync(String nrql) throws IOException {
+	public String querySync(String nrql) throws IOException {
 		
 		// Use the helper to make the Request object
 		Request req = makeQueryRequest(nrql);
 		
 		// Synchronous call
-		return Util.callSync(client, req);
+		Response rsp = Util.callSync(client, req);
+		return rsp.body().string();
 	}
 	
 	public void queryAsync(String nrql, Callback cb) throws IOException {
