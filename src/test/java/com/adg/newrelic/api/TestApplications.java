@@ -68,7 +68,7 @@ public class TestApplications {
 	@Test
 	public void test2ShowSync() throws IOException {
 		// log.info("test2ShowSync(" + appId + ")");
-		appId = 43192210;
+		// appId = 43192210;
 		String sResponse = applications.showSync(appId);
 		
 		// Convert the response into JSON and count the number of applications

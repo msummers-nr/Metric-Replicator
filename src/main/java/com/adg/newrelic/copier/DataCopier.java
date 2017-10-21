@@ -1,4 +1,4 @@
-package com.adg.newrelic.api.copier;
+package com.adg.newrelic.copier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

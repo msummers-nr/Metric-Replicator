@@ -1,4 +1,4 @@
-package com.adg.newrelic.api.copier;
+package com.adg.newrelic.copier;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
