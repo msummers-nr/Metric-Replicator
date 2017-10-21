@@ -17,40 +17,72 @@ public class Applications {
 	public static final String URL_SCHEME = "https";
 	public static final String URL_HOST = "api.newrelic.com";
 	public static final String URL_LIST_PATH = "v2/applications.json";
+	public static final String URL_SHOW_PATH = "v2/applications/{application_id}.json";
+	public static final String URL_METRICS_PATH = "v2/applications/{application_id}/metrics.json";
+	public static final String URL_DATA_PATH = "v2/applications/{application_id}/metrics/data.json";
 	
-	private static OkHttpClient client = new OkHttpClient();
+	private APIKeyset keys;
+	private OkHttpClient client;
 
-	public static Response listSync(APIKeyset keys) throws IOException {
-		return listSync(keys, null, null, null, null);
+	public Applications(APIKeyset keys) {
+		this.keys = keys;
+		client = new OkHttpClient();
 	}
 	
-	public static Response listSync(APIKeyset keys, String filterName, String filterHost, String filterIds, String filterLanguage) throws IOException {
+	/**
+	 * Call the Applications list() synchronously with no parameters
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	public Response listSync() throws IOException {
+		return listSync(null, null, null, null);
+	}
+	
+	/**
+	 * Call the Applications list() synchronously with the filter parameters
+	 * 
+	 * @param filterName
+	 * @param filterHost
+	 * @param filterIds
+	 * @param filterLanguage
+	 * @return
+	 * @throws IOException
+	 */
+	public Response listSync(String filterName, String filterHost, String filterIds, String filterLanguage) throws IOException {
 		// Use the helper to make the Request object
-		Request req = makeListRequest(keys, filterName, filterHost, filterIds, filterLanguage);
+		Request req = makeListRequest(filterName, filterHost, filterIds, filterLanguage);
 		
 		// Synchronous call
-		Response rsp = client.newCall(req).execute();
-		if (!rsp.isSuccessful()) {
-			log.error("Error Message: " + rsp.message());
-			throw new IOException("Bad Status Code: " + rsp);
-		}
+		Response rsp = Util.callSync(client, req);
 		return rsp;
 	}
 	
-	private static HttpUrl.Builder makeUrlBuilder() {
-		// Start with the builder for the main URL
-		HttpUrl.Builder builder = new HttpUrl.Builder()
+	/**
+	 * Call the Applications show() synchronously for a given 
+	 * @param appId
+	 * @return
+	 * @throws IOException
+	 */
+	public Response showSync(int appId) throws IOException {
+		// User the helper to make the Request object
+		Request req = makeShowRequest(appId);
+		
+		// Synchronous call
+		Response rsp = Util.callSync(client, req);
+		return rsp;
+	}
+	
+		
+	private Request makeListRequest(String filterName, String filterHost, String filterIds, String filterLanguage) {
+		
+		// Start the initial builder
+		HttpUrl.Builder urlBuilder = new HttpUrl.Builder()
 				.scheme(URL_SCHEME)
 				.host(URL_HOST)
 				.addPathSegments(URL_LIST_PATH);
-		return builder;
-	}
-	
-	private static Request makeListRequest(APIKeyset keys,
-			String filterName, String filterHost, String filterIds, String filterLanguage) {
 		
 		// Add optional parameters if they are provided
-		HttpUrl.Builder urlBuilder = makeUrlBuilder();
 		if (filterName != null) { urlBuilder.addQueryParameter("filter[name]", filterName); }
 		if (filterHost != null) { urlBuilder.addQueryParameter("filter[host]", filterHost); }
 		if (filterIds != null) { urlBuilder.addQueryParameter("filter[ids]", filterIds); }
@@ -61,6 +93,24 @@ public class Applications {
 			.url(urlBuilder.build())
 			.addHeader("X-Api-Key", keys.getRestKey())
 			.build();
+		return req;
+	}
+	
+	private Request makeShowRequest(int appId) {
+		
+		// Build the URL
+		String urlShow = URL_SHOW_PATH.replace("{application_id}", Integer.toString(appId));
+		HttpUrl httpUrl = new HttpUrl.Builder()
+				.scheme(URL_SCHEME)
+				.host(URL_HOST)
+				.addPathSegments(urlShow)
+				.build();
+		
+		// Build the request
+		Request req = new Request.Builder()
+				.url(httpUrl)
+				.addHeader("X-Api-Key", keys.getRestKey())
+				.build();
 		return req;
 	}
 }
