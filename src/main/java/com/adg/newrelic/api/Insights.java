@@ -2,6 +2,9 @@ package com.adg.newrelic.api;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -9,6 +12,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class Insights {
+	
+	private static final Logger log = LoggerFactory.getLogger(Insights.class);
 	
 	public static final String URL_SCHEME = "https";
 	public static final String URL_QUERY_HOST = "insights-api.newrelic.com";
@@ -44,7 +49,7 @@ public class Insights {
 		// Synchronous call
 		Response rsp = client.newCall(req).execute();
 		if (!rsp.isSuccessful()) {
-			System.err.println("Error Message: " + rsp.message());
+			log.error("Error Message: " + rsp.message());
 			throw new IOException("Bad Status Code: " + rsp);
 		}
 		return rsp;

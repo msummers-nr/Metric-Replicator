@@ -1,12 +1,28 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.8.RELEASE")
+    }
+}
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
 
-// In this section you declare where to find the dependencies of your project
+jar {
+    baseName = 'newrelic-api-client-java'
+    version =  '0.1.0'
+}
+
 repositories {
-    // Use 'jcenter' for resolving your dependencies.
-    // You can declare any Maven/Ivy/file repository here.
     mavenCentral()
 }
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 dependencies {
     testCompile 'junit:junit:4.12'
@@ -18,4 +34,7 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.9.0'
     compile group: 'com.typesafe', name: 'config', version: '1.0.2'
     compile group: 'org.json', name: 'json', version: '20170516'
+    
+    compile("org.springframework.boot:spring-boot-starter")
+    
 }

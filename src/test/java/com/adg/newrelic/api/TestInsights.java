@@ -11,6 +11,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -20,6 +22,8 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class TestInsights {
+
+	private static final Logger log = LoggerFactory.getLogger(TestInsights.class);
 
 	// Used to ensure the async work has completed
 	private CountDownLatch lock = new CountDownLatch(1);
@@ -41,13 +45,9 @@ public class TestInsights {
 		List<String> configArr = conf.getStringList("newrelic-api-lib.configArr");
 		String configId = "newrelic-api-lib." + configArr.get(0);
 		
-		// Create the API Keyset from the config file
-		keys = new APIKeyset();
-		String accountId = conf.getString(configId + ".accountId");
-		keys.setAccountId(accountId);
-		String insightsQueryKey = conf.getString(configId + ".insightsQueryKey");
-		keys.setInsightsQueryKey(insightsQueryKey);
-		System.out.println("Insights Test using keyset for account: " + keys.getAccountId());
+		// Create the API Keyset for this specific configId
+		keys = new APIKeyset(configId);
+		log.info("Insights API Test using keyset for account: " + keys.getAccountId());
 		
 	}
 
@@ -60,7 +60,7 @@ public class TestInsights {
 		JSONArray jResults = jResponse.getJSONArray("results");
 		Long lCount = jResults.getJSONObject(0).getLong("count");
 		assertNotNull(lCount);
-		System.out.println("[Sync] count is: " + lCount.toString());
+		log.info("[Sync] count is: " + lCount.toString());
 	}
 
 	@Test
@@ -82,7 +82,7 @@ public class TestInsights {
 				JSONArray jResults = jResponse.getJSONArray("results");
 				lCountAsync = jResults.getJSONObject(0).getLong("count");
 				assertNotNull(lCountAsync);
-				System.out.println("[Async] count is: " + lCountAsync.toString());
+				log.info("[Async] count is: " + lCountAsync.toString());
 				
 				// Tell the lock this value has been returned
 				lock.countDown();
