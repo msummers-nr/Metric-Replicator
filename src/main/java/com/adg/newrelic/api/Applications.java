@@ -30,7 +30,7 @@ public class Applications {
 	}
 	
 	/**
-	 * Call the Applications list() synchronously with no parameters
+	 * Call the Applications list() synchronously with no parameters.
 	 * 
 	 * @return
 	 * @throws IOException
@@ -40,7 +40,7 @@ public class Applications {
 	}
 	
 	/**
-	 * Call the Applications list() synchronously with the filter parameters
+	 * Call the Applications list() synchronously with the filter parameters.
 	 * 
 	 * @param filterName
 	 * @param filterHost
@@ -59,7 +59,8 @@ public class Applications {
 	}
 	
 	/**
-	 * Call the Applications show() synchronously for a given 
+	 * Call the Applications show() synchronously for a given application id.
+
 	 * @param appId
 	 * @return
 	 * @throws IOException
@@ -73,14 +74,22 @@ public class Applications {
 		return rsp;
 	}
 	
+	public Response metricNamesSync(int appId, String metricName) throws IOException {
+		// Use the helper to make the Request object
+		Request req = makeMetricNamesRequest(appId, metricName);
+
+		// Synchronous call
+		Response rsp = Util.callSync(client, req);
+		return rsp;
+	}
 		
 	private Request makeListRequest(String filterName, String filterHost, String filterIds, String filterLanguage) {
 		
 		// Start the initial builder
 		HttpUrl.Builder urlBuilder = new HttpUrl.Builder()
-				.scheme(URL_SCHEME)
-				.host(URL_HOST)
-				.addPathSegments(URL_LIST_PATH);
+			.scheme(URL_SCHEME)
+			.host(URL_HOST)
+			.addPathSegments(URL_LIST_PATH);
 		
 		// Add optional parameters if they are provided
 		if (filterName != null) { urlBuilder.addQueryParameter("filter[name]", filterName); }
@@ -101,16 +110,35 @@ public class Applications {
 		// Build the URL
 		String urlShow = URL_SHOW_PATH.replace("{application_id}", Integer.toString(appId));
 		HttpUrl httpUrl = new HttpUrl.Builder()
-				.scheme(URL_SCHEME)
-				.host(URL_HOST)
-				.addPathSegments(urlShow)
-				.build();
+			.scheme(URL_SCHEME)
+			.host(URL_HOST)
+			.addPathSegments(urlShow)
+			.build();
 		
 		// Build the request
 		Request req = new Request.Builder()
-				.url(httpUrl)
-				.addHeader("X-Api-Key", keys.getRestKey())
-				.build();
+			.url(httpUrl)
+			.addHeader("X-Api-Key", keys.getRestKey())
+			.build();
+		return req;
+	}
+
+	private Request makeMetricNamesRequest(int appId, String metricName) {
+		// Build the URL
+		String urlMetricName = URL_METRICS_PATH.replace("{application_id}", Integer.toString(appId));
+		HttpUrl.Builder urlBuilder = new HttpUrl.Builder()
+			.scheme(URL_SCHEME)
+			.host(URL_HOST)
+			.addPathSegments(urlMetricName);
+		
+		// Add the optional parameters if they are provided
+		if (metricName != null) { urlBuilder.addQueryParameter("name", metricName); }
+		
+		// Create the request
+		Request req = new Request.Builder()
+			.url(urlBuilder.build())
+			.addHeader("X-Api-Key", keys.getRestKey())
+			.build();
 		return req;
 	}
 }

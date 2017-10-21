@@ -33,11 +33,11 @@ public class Insights {
 		
 		// Create the URL with the proper path and query parameter
 		HttpUrl url = new HttpUrl.Builder()
-				.scheme(URL_SCHEME)
-				.host(URL_QUERY_HOST)
-				.addPathSegments(path)
-				.addQueryParameter("nrql", nrql)
-				.build();
+			.scheme(URL_SCHEME)
+			.host(URL_QUERY_HOST)
+			.addPathSegments(path)
+			.addQueryParameter("nrql", nrql)
+			.build();
 		
 		// Create the request
 		Request req = new Request.Builder()

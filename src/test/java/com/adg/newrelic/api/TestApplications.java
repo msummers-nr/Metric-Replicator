@@ -57,17 +57,16 @@ public class TestApplications {
 		log.info("Number of applications: " + jApplications.length());
 		
 		// There should be more than 0 applications
-		assertNotEquals(jApplications.length(), 0);
+		assertNotEquals(0, jApplications.length());
 		
 		// Store the application id from the first in the array
 		appId = jApplications.getJSONObject(0).getInt("id");
 		log.info("Setting appId to: " + appId);
 	}
 	
-
 	@Test
 	public void test2ShowSync() throws IOException {
-		log.info("test2ShowSync(" + appId + ")");
+		// log.info("test2ShowSync(" + appId + ")");
 		Response rsp = applications.showSync(appId);
 		
 		// Convert the response into JSON and count the number of applications
@@ -75,5 +74,19 @@ public class TestApplications {
 		JSONObject jResponse = new JSONObject(sResponse);
 		int returnedAppId = jResponse.getJSONObject("application").getInt("id");
 		assertEquals(appId, returnedAppId);
+	}
+
+	@Test
+	public void test3MetricNamesSync() throws IOException {
+		Response rsp = applications.metricNamesSync(appId, null);
+		
+		// Convert the response into JSON and count the number of applications
+		String sResponse = rsp.body().string();
+		JSONObject jResponse = new JSONObject(sResponse);
+		JSONArray jMetrics = jResponse.getJSONArray("metrics");
+		log.info("Number of metrics: " + jMetrics.length());
+
+		// There should be more than 0 metrics
+		assertNotEquals(0, jMetrics.length());
 	}
 }

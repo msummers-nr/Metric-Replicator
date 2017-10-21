@@ -17,6 +17,10 @@ jar {
     version =  '0.1.0'
 }
 
+test {
+    systemProperty "config.file", System.getProperty("config.file")
+}
+
 repositories {
     mavenCentral()
 }
