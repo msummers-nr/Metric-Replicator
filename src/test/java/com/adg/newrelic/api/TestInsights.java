@@ -31,6 +31,7 @@ public class TestInsights {
 	
 	// API keys we'll use for the tests
 	private APIKeyset keys;
+	private Insights insights;
 	
 	public static final String NRQL_QUERY = "SELECT count(*) FROM Transaction";
 	public static final long TIMEOUT = 10000;
@@ -49,11 +50,13 @@ public class TestInsights {
 		keys = new APIKeyset(configId);
 		log.info("Insights API Test using keyset for account: " + keys.getAccountId());
 		
+		// Initialize the Insights API
+		insights = new Insights(keys);
 	}
 
 	@Test
 	public void testQuerySync() throws IOException {
-		Response rsp = Insights.querySync(keys, NRQL_QUERY);
+		Response rsp = insights.querySync(NRQL_QUERY);
 		
 		// Convert the response into JSON and pull out the count
 		JSONObject jResponse = new JSONObject(rsp.body().string());
@@ -67,7 +70,7 @@ public class TestInsights {
 	public void testQueryAsync() throws IOException, InterruptedException {
 		
 		// Call the async version of the API
-		Insights.queryAsync(keys, NRQL_QUERY, new Callback() {
+		insights.queryAsync(NRQL_QUERY, new Callback() {
 
 			@Override
 			public void onFailure(Call call, IOException e) {
