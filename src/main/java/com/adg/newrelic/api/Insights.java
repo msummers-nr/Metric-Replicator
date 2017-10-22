@@ -57,11 +57,11 @@ public class Insights {
 		return rsp.body().string();
 	}
 	
-	public void queryAsync(String nrql, Callback cb) throws IOException {
-		// Use the helper to make the Request object
-		Request req = makeQueryRequest(nrql);
+	// public void queryAsync(String nrql, Callback cb) throws IOException {
+	// 	// Use the helper to make the Request object
+	// 	Request req = makeQueryRequest(nrql);
 		
-		// Asynchronous call sends response to callback
-		client.newCall(req).enqueue(cb);
-	}
+	// 	// Asynchronous call sends response to callback
+	// 	client.newCall(req).enqueue(cb);
+	// }
 }

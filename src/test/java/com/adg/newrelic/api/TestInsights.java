@@ -66,36 +66,36 @@ public class TestInsights {
 		log.info("[Sync] count is: " + lCount.toString());
 	}
 
-	@Test
-	public void testQueryAsync() throws IOException, InterruptedException {
+	// @Test
+	// public void testQueryAsync() throws IOException, InterruptedException {
 		
-		// Call the async version of the API
-		insights.queryAsync(NRQL_QUERY, new Callback() {
+	// 	// Call the async version of the API
+	// 	insights.queryAsync(NRQL_QUERY, new Callback() {
 
-			@Override
-			public void onFailure(Call call, IOException e) {
-				assertFalse(e.getMessage(), true);
-			}
+	// 		@Override
+	// 		public void onFailure(Call call, IOException e) {
+	// 			assertFalse(e.getMessage(), true);
+	// 		}
 
-			@Override
-			public void onResponse(Call call, Response rsp) throws IOException {
+	// 		@Override
+	// 		public void onResponse(Call call, Response rsp) throws IOException {
 				
-				// Convert the response into JSON and pull out the count
-				JSONObject jResponse = new JSONObject(rsp.body().string());
-				JSONArray jResults = jResponse.getJSONArray("results");
-				lCountAsync = jResults.getJSONObject(0).getLong("count");
-				assertNotNull(lCountAsync);
-				log.info("[Async] count is: " + lCountAsync.toString());
+	// 			// Convert the response into JSON and pull out the count
+	// 			JSONObject jResponse = new JSONObject(rsp.body().string());
+	// 			JSONArray jResults = jResponse.getJSONArray("results");
+	// 			lCountAsync = jResults.getJSONObject(0).getLong("count");
+	// 			assertNotNull(lCountAsync);
+	// 			log.info("[Async] count is: " + lCountAsync.toString());
 				
-				// Tell the lock this value has been returned
-				lock.countDown();
-			}
-		});
+	// 			// Tell the lock this value has been returned
+	// 			lock.countDown();
+	// 		}
+	// 	});
 		
-		// Wait for the lock to count down from the callback
-		lock.await(TIMEOUT, TimeUnit.MILLISECONDS);
-		assertNotNull(lCountAsync);
+	// 	// Wait for the lock to count down from the callback
+	// 	lock.await(TIMEOUT, TimeUnit.MILLISECONDS);
+	// 	assertNotNull(lCountAsync);
 		
-	}
+	// }
 
 }
