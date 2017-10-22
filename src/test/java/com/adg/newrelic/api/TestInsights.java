@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -64,6 +63,31 @@ public class TestInsights {
 		Long lCount = jResults.getJSONObject(0).getLong("count");
 		assertNotNull(lCount);
 		log.info("[Sync] count is: " + lCount.toString());
+	}
+
+	@Test
+	public void testInsertSync() throws IOException {
+		
+		// Create an array with a couple of events
+		JSONArray jEvents = new JSONArray();
+		jEvents.put(new JSONObject()
+			.put("eventType", "ZZZTest")
+			.put("testInt", 100)
+			.put("testString", "Test100Value")
+		);
+		jEvents.put(new JSONObject()
+			.put("eventType", "ZZZTest")
+			.put("testInt", 50)
+			.put("testString", "Test50Value")
+		);
+		
+		// Insert those events via API call
+		String sResponse = insights.insertSync(jEvents);
+
+		// Convert the response into JSON
+		JSONObject jResponse = new JSONObject(sResponse);
+		boolean bSuccess = jResponse.getBoolean("success");
+		assertTrue(bSuccess);
 	}
 
 	// @Test
