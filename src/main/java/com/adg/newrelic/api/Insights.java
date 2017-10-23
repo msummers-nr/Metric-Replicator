@@ -34,6 +34,13 @@ public class Insights {
 		client = new OkHttpClient();
 	}
 	
+	/***
+	 * Call the Insights query API for this NRQL
+	 * 
+	 * @param nrql
+	 * @return
+	 * @throws IOException
+	 */
 	public String querySync(String nrql) throws IOException {
 		
 		// Use the helper to make the Request object
@@ -44,6 +51,13 @@ public class Insights {
 		return rsp.body().string();
 	}
 
+	/**
+	 * Call the Insights Insert API to publish these events
+	 * 
+	 * @param jEvents
+	 * @return
+	 * @throws IOException
+	 */
 	public String insertSync(JSONArray jEvents) throws IOException {
 		// Use the helper to make the Request object
 		Request req = makeInsertRequest(jEvents);

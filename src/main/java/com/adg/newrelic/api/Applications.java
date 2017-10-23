@@ -94,6 +94,11 @@ public class Applications {
 	
 	/**
 	 * Call the Applications metricData() synchronously for a given appId
+	 * 
+	 * @param appId
+	 * @param metricNames
+	 * @return
+	 * @throws IOException
 	 */
 	public String metricDataSync(int appId, String metricNames) throws IOException {
 		// Use the helper to make the Request object
