@@ -1,7 +1,6 @@
 package com.adg.newrelic.api;
 
 import java.io.IOException;
-import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +27,7 @@ public class Applications {
 	public Applications(APIKeyset keys) {
 		this.keys = keys;
 		client = new OkHttpClient();
+		log.debug("Applications API constructed");
 	}
 	
 	/**

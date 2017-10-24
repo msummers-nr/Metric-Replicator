@@ -31,8 +31,10 @@ gradle-app.setting
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 
-# Don't upload the conf which has local keys
-application.conf
+# Don't upload custom config files, except the template
+config/
+!config/template.json
+!config/template.conf
 
 # VSCode
 .vscode

@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,17 +15,9 @@ import org.slf4j.LoggerFactory;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-
 public class TestInsights {
 
 	private static final Logger log = LoggerFactory.getLogger(TestInsights.class);
-
-	// Used to ensure the async work has completed
-	private CountDownLatch lock = new CountDownLatch(1);
-	private Long lCountAsync;
 	
 	// API keys we'll use for the tests
 	private APIKeyset keys;
@@ -40,14 +31,19 @@ public class TestInsights {
 		
 		// Read in the config files
 		Config conf = ConfigFactory.load();
+		log.info("Reading config file: " + conf.origin());
 		
+		// Get the name of the unitTestAccount
+		String unitTestAccount = conf.getString("newrelic-api-client.tests.unitTestAccount");
+		keys = new APIKeyset(conf, unitTestAccount);
+
 		// Get the first config from the array
-		List<String> configArr = conf.getStringList("newrelic-api-lib.configArr");
-		String configId = "newrelic-api-lib." + configArr.get(0);
+		// List<String> configArr = conf.getStringList("newrelic-api-client.configArr");
+		// String configId = "newrelic-api-client." + configArr.get(0);
 		
 		// Create the API Keyset for this specific configId
-		keys = new APIKeyset(configId);
-		log.info("Insights API Test using keyset for account: " + keys.getAccountId());
+		// keys = new APIKeyset(configId);
+		// log.info("Insights API Test using keyset for account: " + keys.getAccountId());
 		
 		// Initialize the Insights API
 		insights = new Insights(keys);
@@ -89,37 +85,4 @@ public class TestInsights {
 		boolean bSuccess = jResponse.getBoolean("success");
 		assertTrue(bSuccess);
 	}
-
-	// @Test
-	// public void testQueryAsync() throws IOException, InterruptedException {
-		
-	// 	// Call the async version of the API
-	// 	insights.queryAsync(NRQL_QUERY, new Callback() {
-
-	// 		@Override
-	// 		public void onFailure(Call call, IOException e) {
-	// 			assertFalse(e.getMessage(), true);
-	// 		}
-
-	// 		@Override
-	// 		public void onResponse(Call call, Response rsp) throws IOException {
-				
-	// 			// Convert the response into JSON and pull out the count
-	// 			JSONObject jResponse = new JSONObject(rsp.body().string());
-	// 			JSONArray jResults = jResponse.getJSONArray("results");
-	// 			lCountAsync = jResults.getJSONObject(0).getLong("count");
-	// 			assertNotNull(lCountAsync);
-	// 			log.info("[Async] count is: " + lCountAsync.toString());
-				
-	// 			// Tell the lock this value has been returned
-	// 			lock.countDown();
-	// 		}
-	// 	});
-		
-	// 	// Wait for the lock to count down from the callback
-	// 	lock.await(TIMEOUT, TimeUnit.MILLISECONDS);
-	// 	assertNotNull(lCountAsync);
-		
-	// }
-
 }

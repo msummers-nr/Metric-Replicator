@@ -2,6 +2,7 @@ package com.adg.newrelic.api;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigValue;
 
 /**
  * The API Keyset class holds a set of keys for a single account
@@ -23,19 +24,17 @@ public class APIKeyset {
 	 * 
 	 * @param configId the name of the config to use
 	 */
-	public APIKeyset(String configId) {
-		
-		// Load up the config
-		Config conf = ConfigFactory.load();
+	public APIKeyset(Config conf, String accountName) {
 		
 		// Set all the local values from the config
-		accountName = configId;
-		adminName = conf.getString(configId + ".adminName");
-		accountId = conf.getString(configId + ".accountId");
-		restKey = conf.getString(configId + ".restKey");
-		adminKey = conf.getString(configId + ".adminKey");
-		insightsQueryKey = conf.getString(configId + ".insightsQueryKey");
-		insightsInsertKey = conf.getString(configId + ".insightsInsertKey");
+		String prefix = "newrelic-api-client.accounts." + accountName;
+		this.accountName = accountName;
+		this.adminName = conf.getString(prefix + ".adminName");
+		this.accountId = conf.getString(prefix + ".accountId");
+		this.restKey = conf.getString(prefix + ".restKey");
+		this.adminKey = conf.getString(prefix + ".adminKey");
+		this.insightsQueryKey = conf.getString(prefix + ".insightsQueryKey");
+		this.insightsInsertKey = conf.getString(prefix + ".insightsInsertKey");
 	}
 	
 	public String getAccountName() {

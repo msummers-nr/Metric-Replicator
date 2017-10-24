@@ -16,6 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigList;
+import com.typesafe.config.ConfigValue;
+import com.typesafe.config.ConfigValueFactory;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestApplications {
@@ -33,13 +36,17 @@ public class TestApplications {
 		
 		// Read in the config files
 		Config conf = ConfigFactory.load();
-		
-		// Get the first config from the array
-		List<String> configArr = conf.getStringList("newrelic-api-lib.configArr");
-		String configId = "newrelic-api-lib." + configArr.get(0);
+		log.info("Reading config file: " + conf.origin());
+
+		// Get the name of the unitTestAccount
+		String unitTestAccount = conf.getString("newrelic-api-client.tests.unitTestAccount");
+		keys = new APIKeyset(conf, unitTestAccount);
+
+		// List<String> configArr = conf.getStringList("newrelic-api-client.configArr");
+		// String configId = "newrelic-api-client." + configArr.get(0);
 		
 		// Create the API Keyset for this specific configId
-		keys = new APIKeyset(configId);
+		// keys = new APIKeyset(configId);
 		log.info("Application API Test using keyset for account: " + keys.getAccountId());
 		
 		// Initialize the Applications API
