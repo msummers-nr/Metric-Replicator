@@ -36,14 +36,7 @@ public class TestInsights {
 		// Get the name of the unitTestAccount
 		String unitTestAccount = conf.getString("newrelic-api-client.tests.unitTestAccount");
 		keys = new APIKeyset(conf, unitTestAccount);
-
-		// Get the first config from the array
-		// List<String> configArr = conf.getStringList("newrelic-api-client.configArr");
-		// String configId = "newrelic-api-client." + configArr.get(0);
-		
-		// Create the API Keyset for this specific configId
-		// keys = new APIKeyset(configId);
-		// log.info("Insights API Test using keyset for account: " + keys.getAccountId());
+		log.info("Insights API Test using keyset for account: " + keys.getAccountName());
 		
 		// Initialize the Insights API
 		insights = new Insights(keys);

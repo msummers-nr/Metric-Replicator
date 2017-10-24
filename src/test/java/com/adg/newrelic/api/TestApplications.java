@@ -41,13 +41,7 @@ public class TestApplications {
 		// Get the name of the unitTestAccount
 		String unitTestAccount = conf.getString("newrelic-api-client.tests.unitTestAccount");
 		keys = new APIKeyset(conf, unitTestAccount);
-
-		// List<String> configArr = conf.getStringList("newrelic-api-client.configArr");
-		// String configId = "newrelic-api-client." + configArr.get(0);
-		
-		// Create the API Keyset for this specific configId
-		// keys = new APIKeyset(configId);
-		log.info("Application API Test using keyset for account: " + keys.getAccountId());
+		log.info("Application API Test using keyset for account: " + keys.getAccountName());
 		
 		// Initialize the Applications API
 		applications = new Applications(keys);
