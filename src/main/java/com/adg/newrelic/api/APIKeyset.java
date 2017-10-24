@@ -22,13 +22,14 @@ public class APIKeyset {
 	/**
 	 * Populate 
 	 * 
-	 * @param configId the name of the config to use
+	 * @param conf the config for the whole API project
+	 * @param accountName the name of the account to pull from the config
 	 */
 	public APIKeyset(Config conf, String accountName) {
 		
 		// Set all the local values from the config
 		String prefix = "newrelic-api-client.accounts." + accountName;
-		this.accountName = accountName;
+		this.accountName = conf.getString(prefix + ".accountName");
 		this.adminName = conf.getString(prefix + ".adminName");
 		this.accountId = conf.getString(prefix + ".accountId");
 		this.restKey = conf.getString(prefix + ".restKey");
