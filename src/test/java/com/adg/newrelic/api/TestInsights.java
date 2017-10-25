@@ -3,7 +3,6 @@ package com.adg.newrelic.api;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,7 +30,7 @@ public class TestInsights {
 		
 		// Read in the config files
 		Config conf = ConfigFactory.load();
-		log.info("Reading config file: " + conf.origin());
+		log.info("Config file used: " + conf.origin());
 		
 		// Get the name of the unitTestAccount
 		String unitTestAccount = conf.getString("newrelic-api-client.tests.unitTestAccount");

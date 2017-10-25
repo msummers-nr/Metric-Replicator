@@ -16,20 +16,7 @@ There is a template config file in the config directory, it is in [HOCON](https:
 | API Key | insightsQueryKey | |
 | API Key | insightsInsertKey | |
 
-## Labels and IDs
-* Account Name - This is just a label you can supply, helps in logging
-* Admin Name - This is also a label to know who the Admin API Key belongs to
-*  - This is the id used in the URL bar and identifies your account
-
-## API Keys
-
-* License Key - This is used by Agents and Plugins to send data to New Relic
-* REST API Key - This 
-
-## Main REST API
-You can see the list of calls on the [API Explorer](https://api.newrelic.com/).
-
-### Supported
+## APIs Supported
 * Applications (list, show, metricNames metricData)
 
 ### To Do

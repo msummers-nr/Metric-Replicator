@@ -32,9 +32,8 @@ gradle-app.setting
 # gradle/wrapper/gradle-wrapper.properties
 
 # Don't upload custom config files, except the template
-config/
-!config/template.json
-!config/template.conf
+/config/*
+!/config/template.conf
 
 # VSCode
 .vscode

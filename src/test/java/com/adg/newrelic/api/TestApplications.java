@@ -3,7 +3,6 @@ package com.adg.newrelic.api;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,9 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import com.typesafe.config.ConfigList;
-import com.typesafe.config.ConfigValue;
-import com.typesafe.config.ConfigValueFactory;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestApplications {
@@ -36,7 +32,7 @@ public class TestApplications {
 		
 		// Read in the config files
 		Config conf = ConfigFactory.load();
-		log.info("Reading config file: " + conf.origin());
+		log.info("Config file used: " + conf.origin());
 
 		// Get the name of the unitTestAccount
 		String unitTestAccount = conf.getString("newrelic-api-client.tests.unitTestAccount");

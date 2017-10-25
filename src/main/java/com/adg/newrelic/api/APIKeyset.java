@@ -1,8 +1,6 @@
 package com.adg.newrelic.api;
 
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import com.typesafe.config.ConfigValue;
 
 /**
  * The API Keyset class holds a set of keys for a single account
@@ -14,6 +12,7 @@ public class APIKeyset {
 	private String accountName;
 	private String adminName;
 	private String accountId;
+	private String licenseKey;
 	private String restKey;
 	private String adminKey;
 	private String insightsQueryKey;
@@ -25,13 +24,14 @@ public class APIKeyset {
 	 * @param conf the config for the whole API project
 	 * @param accountName the name of the account to pull from the config
 	 */
-	public APIKeyset(Config conf, String accountName) {
+	public APIKeyset(Config conf, String account) {
 		
 		// Set all the local values from the config
-		String prefix = "newrelic-api-client.accounts." + accountName;
+		String prefix = "newrelic-api-client.accounts." + account;
 		this.accountName = conf.getString(prefix + ".accountName");
 		this.adminName = conf.getString(prefix + ".adminName");
 		this.accountId = conf.getString(prefix + ".accountId");
+		this.licenseKey = conf.getString(prefix + ".licenseKey");
 		this.restKey = conf.getString(prefix + ".restKey");
 		this.adminKey = conf.getString(prefix + ".adminKey");
 		this.insightsQueryKey = conf.getString(prefix + ".insightsQueryKey");
@@ -55,6 +55,12 @@ public class APIKeyset {
 	}
 	public void setAccountId(String accountId) {
 		this.accountId = accountId;
+	}
+	public String getLicenseKey() {
+		return licenseKey;
+	}
+	public void setLicenseKey(String licenseKey) {
+		this.licenseKey = licenseKey;
 	}
 	public String getRestKey() {
 		return restKey;

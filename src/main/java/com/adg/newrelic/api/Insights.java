@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 // import okhttp3.Callback;
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -24,8 +23,6 @@ public class Insights {
 	public static final String URL_INSERT_HOST = "insights-collector.newrelic.com";
 	public static final String URL_INSERT_PATH = "v1/accounts/{account_id}/events";
 	
-	public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-
 	private APIKeyset keys;
 	private OkHttpClient client;
 	
@@ -44,7 +41,7 @@ public class Insights {
 	public String querySync(String nrql) throws IOException {
 		
 		// Use the helper to make the Request object
-		Request req = makeQueryRequest(nrql);
+		Request req = prepQueryRequest(nrql);
 		
 		// Synchronous call
 		Response rsp = Util.callSync(client, req);
@@ -60,14 +57,14 @@ public class Insights {
 	 */
 	public String insertSync(JSONArray jEvents) throws IOException {
 		// Use the helper to make the Request object
-		Request req = makeInsertRequest(jEvents);
+		Request req = prepInsertRequest(jEvents);
 
 		// Synchronous call
 		Response rsp = Util.callSync(client, req);
 		return rsp.body().string();
 	}
 
-	private Request makeQueryRequest(String nrql) {
+	private Request prepQueryRequest(String nrql) {
 		// Replace the accountId in the path
 		String pathSegment = URL_QUERY_PATH.replace("{account_id}", keys.getAccountId());
 		log.debug("Query Path Segment: " + pathSegment);
@@ -88,7 +85,7 @@ public class Insights {
 		return req;
 	}
 
-	private Request makeInsertRequest(JSONArray jEvents) {
+	private Request prepInsertRequest(JSONArray jEvents) {
 		// Replace the accountId in the path
 		String pathSegment = URL_INSERT_PATH.replace("{account_id}", keys.getAccountId());
 		log.debug("Insert Path Segment: " + pathSegment);
@@ -104,9 +101,8 @@ public class Insights {
 		Request req = new Request.Builder()
 			.url(httpUrl)
 			.addHeader("X-Insert-Key", keys.getInsightsInsertKey())
-			.post(RequestBody.create(JSON, jEvents.toString()))
+			.post(RequestBody.create(Util.JSON, jEvents.toString()))
 			.build();
-
 		return req;
 	}
 	
