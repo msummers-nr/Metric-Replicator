@@ -101,7 +101,7 @@ public class Insights {
 		Request req = new Request.Builder()
 			.url(httpUrl)
 			.addHeader("X-Insert-Key", keys.getInsightsInsertKey())
-			.post(RequestBody.create(Util.JSON, jEvents.toString()))
+			.post(RequestBody.create(Util.JSON_UTF8, jEvents.toString()))
 			.build();
 		return req;
 	}

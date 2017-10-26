@@ -14,7 +14,8 @@ public class Util {
 
 	private static final Logger log = LoggerFactory.getLogger(Util.class);
 	
-	public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+	public static final MediaType JSON_UTF8 = MediaType.parse("application/json; charset=utf-8");
+	public static final MediaType JSON_ONLY = MediaType.parse("application/json");
 
 	/**
 	 * Helper function to invoke the HTTP client and handle errors
