@@ -1,4 +1,4 @@
-package com.adg.newrelic.copier.task.synthetics;
+package com.nrh.api.module.nr.task.synthetics;
 
 import java.io.IOException;
 
@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.adg.newrelic.api.Insights;
+import com.nrh.api.module.nr.Insights;
 
 public class Extract {
   private static final Logger log = LoggerFactory.getLogger(Extract.class);

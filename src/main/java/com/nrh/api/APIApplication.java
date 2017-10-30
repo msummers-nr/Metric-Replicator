@@ -1,4 +1,4 @@
-package com.adg.newrelic.copier;
+package com.nrh.api;
 
 
 import com.typesafe.config.Config;
@@ -15,9 +15,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class DataCopier {
+public class APIApplication {
 
-	private static final Logger log = LoggerFactory.getLogger(DataCopier.class);
+	private static final Logger log = LoggerFactory.getLogger(APIApplication.class);
 	
 	private static final String PREFIX = "newrelic-api-client.";
 	private static final String EXAMPLE_ENABLED = "tasks.exampleTask.enabled";
@@ -36,7 +36,7 @@ public class DataCopier {
 		System.setProperty(SYNTHETICS_COPIER_ENABLED,  getConfString(SYNTHETICS_COPIER_ENABLED));
 		
 		// Start the Spring Boot application
-		SpringApplication.run(DataCopier.class, args);
+		SpringApplication.run(APIApplication.class, args);
 	}
 
 	@PostConstruct

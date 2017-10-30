@@ -1,4 +1,4 @@
-package com.adg.newrelic.copier.task.synthetics;
+package com.nrh.api.module.nr.task.synthetics;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.adg.newrelic.api.Plugins;
+import com.nrh.api.module.nr.Plugins;
 
 public class MonitorStats {
   

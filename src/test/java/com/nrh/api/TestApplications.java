@@ -1,4 +1,4 @@
-package com.adg.newrelic.api;
+package com.nrh.api;
 
 import static org.junit.Assert.*;
 
@@ -13,6 +13,8 @@ import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.nrh.api.module.nr.APIKeyset;
+import com.nrh.api.module.nr.Applications;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
