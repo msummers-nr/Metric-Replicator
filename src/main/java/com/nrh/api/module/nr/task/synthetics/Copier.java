@@ -1,9 +1,10 @@
-package com.adg.newrelic.copier.task.synthetics;
+package com.nrh.api.module.nr.task.synthetics;
 
-import com.adg.newrelic.api.APIKeyset;
-import com.adg.newrelic.api.Insights;
-import com.adg.newrelic.api.Plugins;
-import com.adg.newrelic.copier.DataCopier;
+import com.nrh.api.APIApplication;
+import com.nrh.api.module.nr.APIKeyset;
+import com.nrh.api.module.nr.Insights;
+import com.nrh.api.module.nr.Plugins;
+
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,11 +30,11 @@ public class Copier {
     log.info("Initializing v" + VERSION);
 
     // Initialize the Insights and Plugins API objects
-    String sourceAccount = DataCopier.getConfString(PROP_SOURCE);
-    APIKeyset sourceKeys = new APIKeyset(DataCopier.getConfig(), sourceAccount);
+    String sourceAccount = APIApplication.getConfString(PROP_SOURCE);
+    APIKeyset sourceKeys = new APIKeyset(APIApplication.getConfig(), sourceAccount);
     insights = new Insights(sourceKeys);
-    String destAccount = DataCopier.getConfString(PROP_DEST);
-    APIKeyset destKeys = new APIKeyset(DataCopier.getConfig(), destAccount);
+    String destAccount = APIApplication.getConfString(PROP_DEST);
+    APIKeyset destKeys = new APIKeyset(APIApplication.getConfig(), destAccount);
     plugins = new Plugins(destKeys);
   }
 

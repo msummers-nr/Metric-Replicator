@@ -1,4 +1,4 @@
-package com.adg.newrelic.api;
+package com.nrh.api.module.nr;
 
 import java.io.IOException;
 

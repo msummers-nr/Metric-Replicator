@@ -1,4 +1,4 @@
-package com.adg.newrelic.copier.task.synthetics;
+package com.nrh.api.module.nr.task.synthetics;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
