@@ -8,24 +8,37 @@ import org.json.JSONObject;
 
 import com.nrh.api.module.nr.Plugins;
 
-public class MonitorStats {
+public class DataConverter {
   
   private JSONArray jResults;
-  private JSONArray jLocations;
   private int countSuccess = 0;
   private int countLocations = 0;
   private double dSumDuration = 0.0;
+  private String monitorName;  
+  private Map<String, Double> mPluginMetrics = new HashMap<String, Double>();
+  private Map<String, Double> mInsightsMetrics = new HashMap<String, Double>();
   
-  public Map<String, Double> mMetrics = new HashMap<String, Double>();
-  public String monitorName;
-  
-  public MonitorStats(JSONObject jMonitorData, JSONArray jLocations) {
-    this.jLocations = jLocations;
+  public DataConverter(JSONObject jMonitorData, JSONArray jLocations) {
     jResults = jMonitorData.getJSONArray("results");
     monitorName = jMonitorData.getString("name");
+    
+    // Process the data into the intermediary HashMaps
+    processData(jLocations);
   }
   
-  public void parse() {
+  public String getMonitorName() {
+    return monitorName;
+  }
+  
+  public Map<String, Double> getPluginMap() {
+    return mPluginMetrics;
+  }
+  
+  public Map<String, Double> getInsightsMap() {
+    return mInsightsMetrics;
+  }
+  
+  private void processData(JSONArray jLocations) {
     // Loop over the location list
     for (int i=0; i < jLocations.length(); i++) {
       String sLocId = "Location/" + jLocations.getString(i);
@@ -50,7 +63,7 @@ public class MonitorStats {
     dSumDuration += dLocDuration;
     
     // Add the metrics to the map
-    boolean bSuccess = addLocationMetrics(sLocId, sLocResult, dLocDuration, mMetrics);
+    boolean bSuccess = addLocationMetrics(sLocId, sLocResult, dLocDuration, mPluginMetrics);
     if (bSuccess) {
       countSuccess++;
     }
@@ -86,11 +99,19 @@ public class MonitorStats {
     String sRollupFailPct = Plugins.buildMetricName("Overall", "Failure", "pct");
     String sRollupDuration = Plugins.buildMetricName("Overall", "Duration", "ms");
 
-    // Store the values in the metric map
-    mMetrics.put(sRollupSuccessCnt, new Double(countSuccess));
-    mMetrics.put(sRollupSuccesPct, dSuccessRate);
-    mMetrics.put(sRollupFailCnt, new Double(countLocations - countSuccess));
-    mMetrics.put(sRollupFailPct, 100 - dSuccessRate);
-    mMetrics.put(sRollupDuration, dAvgDuration);
+    // Store the values in the plugin map
+    mPluginMetrics.put(sRollupSuccessCnt, new Double(countSuccess));
+    mPluginMetrics.put(sRollupSuccesPct, dSuccessRate);
+    mPluginMetrics.put(sRollupFailCnt, new Double(countLocations - countSuccess));
+    mPluginMetrics.put(sRollupFailPct, 100 - dSuccessRate);
+    mPluginMetrics.put(sRollupDuration, dAvgDuration);
+    
+    // Store the values in the insights map
+    mInsightsMetrics.put("successCount", new Double(countSuccess));
+    mInsightsMetrics.put("successRate", dSuccessRate);
+    mInsightsMetrics.put("failCount", new Double(countLocations - countSuccess));
+    mInsightsMetrics.put("failRate", 100 - dSuccessRate);
+    mInsightsMetrics.put("duration", dAvgDuration);
+    mInsightsMetrics.put("locationCount", new Double(countLocations));
   }
 }

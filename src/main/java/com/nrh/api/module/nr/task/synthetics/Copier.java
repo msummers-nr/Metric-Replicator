@@ -44,15 +44,15 @@ public class Copier {
   @Scheduled(cron = "*/30 * * * * *")
   public void start() throws IOException {
     
-    // Extract from Insights, Transform the data format
+    // Extract from Insights
     Extract extract = new Extract(insights);
+    
+    // Transform the data format (for Plugin and Insights)
     Transform transform = new Transform(extract);
     
-    // Load
-    plugins.postMessage(transform.toPluginMessage());
-    
-    // Pivot the filter data into Insights data to insert
-    
+    // Load the data into Plugin API and Insights Insert API
+    plugins.postMessage(transform.toPluginFormat());
+    insights.insertSync(transform.toInsightsFormat());
   }
 
 }

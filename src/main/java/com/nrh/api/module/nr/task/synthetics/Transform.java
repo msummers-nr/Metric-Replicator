@@ -12,7 +12,8 @@ public class Transform {
   private JSONArray jMonitors;
   private JSONArray jLocations;
   
-  private PluginMessage pMessage = new PluginMessage();
+  private DataFormatPlugin dfPlugin = new DataFormatPlugin();
+  private DataFormatInsights dfInsights = new DataFormatInsights();
   
   public Transform(Extract extract) {
 
@@ -27,17 +28,27 @@ public class Transform {
     // Loop through the monitors
     for(int i=0; i < jMonitors.length(); i++) {
       JSONObject jMonitorData = jMonitors.getJSONObject(i);
-      MonitorStats mStats = new MonitorStats(jMonitorData, jLocations);
-      mStats.parse();
-      pMessage.addMetrics(mStats);
+      
+      // This will convert the data for this monitor into a standard format
+      DataConverter converter = new DataConverter(jMonitorData, jLocations);
+      
+      // Add the data for that monitor to the Plugin Formatter
+      dfPlugin.addMonitorData(converter);
+      
+      // Add the data for that monitor to the Insights Formatter
+      dfInsights.addMonitorData(converter);
     }
   }
   
-  public JSONObject toPluginMessage() {
-    return pMessage.getMessage();
+  public JSONObject toPluginFormat() {
+    JSONObject jPlugin = dfPlugin.getJSON();
+//    log.debug(jPlugin.toString(2));
+    return jPlugin;
   }
   
-  public String toInsightsMessage() {
-    return null;
+  public JSONArray toInsightsFormat() {
+    JSONArray jInsights = dfInsights.getJSON();
+//    log.debug(jInsights.toString(2));
+    return jInsights;
   }
 }

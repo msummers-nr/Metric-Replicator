@@ -3,12 +3,12 @@ package com.nrh.api.module.nr.task.synthetics;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class PluginMessage {
+public class DataFormatPlugin {
   
   private JSONObject jAgent;
   private JSONArray jComponents;
   
-  public PluginMessage() {
+  public DataFormatPlugin() {
     // Initialize the agent section
     jAgent = new JSONObject();
     jAgent.put("host", Runtime.getHostName());
@@ -19,22 +19,21 @@ public class PluginMessage {
     jComponents = new JSONArray();
   }
   
-  public JSONObject getMessage() {
+  public JSONObject getJSON() {
     JSONObject jMessage = new JSONObject();
     jMessage.put("agent", jAgent);
     jMessage.put("components", jComponents);
     return jMessage;
   }
   
-//  public void addMetrics(String monitorName, Map<String, Double> mMetrics) {
-  public void addMetrics(MonitorStats mStats) {
+  public void addMonitorData(DataConverter converter) {
     
     // Build out the component section for this monitor and metric data
     JSONObject jCmp = new JSONObject();
-    jCmp.put("name", mStats.monitorName);
+    jCmp.put("name", converter.getMonitorName());
     jCmp.put("guid", Copier.GUID);
     jCmp.put("duration", 30);
-    jCmp.put("metrics", mStats.mMetrics);
+    jCmp.put("metrics", converter.getPluginMap());
     jComponents.put(jCmp);
   }
 }
