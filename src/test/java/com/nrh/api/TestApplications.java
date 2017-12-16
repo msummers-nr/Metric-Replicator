@@ -15,8 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import com.nrh.api.module.nr.APIKeyset;
 import com.nrh.api.module.nr.Applications;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestApplications {
@@ -33,12 +31,12 @@ public class TestApplications {
 	public void setUp() throws Exception {
 		
 		// Read in the config files
-		Config conf = ConfigFactory.load();
-		log.info("Config file used: " + conf.origin());
+		APIApplication.readConfig();
+		log.info("Config file used: " + APIApplication.getConfig().origin());
 
 		// Get the name of the unitTestAccount
-		String unitTestAccount = conf.getString("newrelic-api-client.tests.unitTestAccount");
-		keys = new APIKeyset(conf, unitTestAccount);
+		String unitTestAccount = APIApplication.getConfString("newrelic-api-client.tests.unitTestAccount");
+		keys = APIApplication.getAPIKeyset(unitTestAccount);
 		log.info("Application API Test using keyset for account: " + keys.getAccountName());
 		
 		// Initialize the Applications API

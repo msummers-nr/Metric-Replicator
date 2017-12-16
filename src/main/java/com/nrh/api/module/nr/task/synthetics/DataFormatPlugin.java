@@ -13,7 +13,7 @@ public class DataFormatPlugin {
     jAgent = new JSONObject();
     jAgent.put("host", Runtime.getHostName());
     jAgent.put("pid", Runtime.getPid());
-    jAgent.put("version", Copier.VERSION);
+    jAgent.put("version", SyntheticsCopier.VERSION);
     
     // Initialize the components[]
     jComponents = new JSONArray();
@@ -31,7 +31,7 @@ public class DataFormatPlugin {
     // Build out the component section for this monitor and metric data
     JSONObject jCmp = new JSONObject();
     jCmp.put("name", converter.getMonitorName());
-    jCmp.put("guid", Copier.GUID);
+    jCmp.put("guid", SyntheticsCopier.GUID);
     jCmp.put("duration", 30);
     jCmp.put("metrics", converter.getPluginMap());
     jComponents.put(jCmp);

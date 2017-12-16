@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnProperty(prefix="exampleTask.example", name="enabled")
+@ConditionalOnProperty(prefix="newrelic-api-client.tasks.exampleTask", name="enabled")
 public class ExampleTask {
 
   private static final Logger log = LoggerFactory.getLogger(ExampleTask.class);

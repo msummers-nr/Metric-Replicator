@@ -13,12 +13,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnProperty(prefix="tasks.syntheticsCopier", name="enabled")
-public class Copier {
+@ConditionalOnProperty(prefix="newrelic-api-client.tasks.syntheticsCopier", name="enabled")
+public class SyntheticsCopier {
 
-  private static final Logger log = LoggerFactory.getLogger(Copier.class);
-  private static final String PROP_SOURCE = "tasks.syntheticsCopier.source.account";
-  private static final String PROP_DEST = "tasks.syntheticsCopier.dest.account";
+  private static final Logger log = LoggerFactory.getLogger(SyntheticsCopier.class);
+  private static final String PREFIX = "newrelic-api-client.tasks.syntheticsCopier";
+  private static final String PROP_SOURCE = PREFIX + ".source.account";
+  private static final String PROP_DEST = PREFIX + ".dest.account";
 
   public static final String GUID = "com.adg.synthetics.monitor.Synthetics";
   public static final String VERSION = "2.1.1";
@@ -26,7 +27,7 @@ public class Copier {
   private Insights insights;
   private Plugins plugins;
 
-  public Copier() {
+  public SyntheticsCopier() {
     log.info("Initializing v" + VERSION);
 
     // Initialize the Insights and Plugins API objects

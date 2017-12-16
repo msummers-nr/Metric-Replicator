@@ -1,5 +1,6 @@
 package com.nrh.api.module.nr;
 
+import com.nrh.api.APIApplication;
 import com.typesafe.config.Config;
 
 /**
@@ -28,14 +29,14 @@ public class APIKeyset {
 		
 		// Set all the local values from the config
 		String prefix = "newrelic-api-client.accounts." + account;
-		this.accountName = conf.getString(prefix + ".accountName");
-		this.adminName = conf.getString(prefix + ".adminName");
-		this.accountId = conf.getString(prefix + ".accountId");
-		this.licenseKey = conf.getString(prefix + ".licenseKey");
-		this.restKey = conf.getString(prefix + ".restKey");
-		this.adminKey = conf.getString(prefix + ".adminKey");
-		this.insightsQueryKey = conf.getString(prefix + ".insightsQueryKey");
-		this.insightsInsertKey = conf.getString(prefix + ".insightsInsertKey");
+		this.accountName = APIApplication.getConfString(prefix + ".accountName");
+		this.adminName = APIApplication.getConfString(prefix + ".adminName");
+		this.accountId = APIApplication.getConfString(prefix + ".accountId");
+		this.licenseKey = APIApplication.getConfString(prefix + ".licenseKey");
+		this.restKey = APIApplication.getConfString(prefix + ".restKey");
+		this.adminKey = APIApplication.getConfString(prefix + ".adminKey");
+		this.insightsQueryKey = APIApplication.getConfString(prefix + ".insightsQueryKey");
+		this.insightsInsertKey = APIApplication.getConfString(prefix + ".insightsInsertKey");
 	}
 	
 	public String getAccountName() {
