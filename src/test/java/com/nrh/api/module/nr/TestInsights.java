@@ -1,4 +1,4 @@
-package com.nrh.api;
+package com.nrh.api.module.nr;
 
 import static org.junit.Assert.*;
 
@@ -8,12 +8,15 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.test.context.junit4.SpringRunner;
+import com.nrh.api.APIApplication;
 import com.nrh.api.module.nr.APIKeyset;
 import com.nrh.api.module.nr.Insights;
 
+@RunWith(SpringRunner.class)
 public class TestInsights {
 
 	private static final Logger log = LoggerFactory.getLogger(TestInsights.class);
