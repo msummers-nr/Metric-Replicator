@@ -1,7 +1,8 @@
 package com.nrh.api.module.nr;
 
+import com.nrh.api.module.nr.dao.Metric;
 import java.io.IOException;
-
+import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,9 +101,9 @@ public class RestClient {
 	 * @return
 	 * @throws IOException
 	 */
-	public String metricDataSync(int appId, String metricNames) throws IOException {
+	public String metricDataSync(int appId, ArrayList<Metric> metricNameList) throws IOException {
 		// Use the helper to make the Request object
-		Request req = makeMetricDataRequest(appId, metricNames);
+		Request req = makeMetricDataRequest(appId, metricNameList);
 
 		// Synchronous call
 		Response rsp = Util.callSync(client, req);
@@ -168,7 +169,7 @@ public class RestClient {
 		return req;
 	}
 
-	private Request makeMetricDataRequest(int appId, String metricNames) {
+	private Request makeMetricDataRequest(int appId, ArrayList<Metric> metricNameList) {
 		// Build the URL
 		String urlMetricData = URL_DATA_PATH.replace("{application_id}", Integer.toString(appId));
 		HttpUrl.Builder urlBuilder = new HttpUrl.Builder()
@@ -177,7 +178,12 @@ public class RestClient {
 			.addPathSegments(urlMetricData);
 
 		// Add the optional parameters if they are provided
-		if (metricNames != null) { urlBuilder.addEncodedQueryParameter("names[]", metricNames); }
+		if (metricNameList != null) {
+			for (Metric metricName : metricNameList ) {
+				String sFullName = metricName.getFullName();
+				urlBuilder.addEncodedQueryParameter("names[]", sFullName);
+			}			
+		}
 
 		// Create the request
 		Request req = new Request.Builder()
