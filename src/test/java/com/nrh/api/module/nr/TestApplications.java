@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 import com.nrh.api.APIApplication;
 import com.nrh.api.module.nr.APIKeyset;
-import com.nrh.api.module.nr.Applications;
+import com.nrh.api.module.nr.RestClient;
 
 @RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -27,7 +27,7 @@ public class TestApplications {
 	private static final String METRIC_NAMES = "Agent/MetricsReported/count";
 
 	private APIKeyset keys;
-	private Applications applications; 
+	private RestClient client; 
 	private static int appId;
 
 	@Before
@@ -43,12 +43,12 @@ public class TestApplications {
 		log.info("Application API Test using keyset for account: " + keys.getAccountName());
 		
 		// Initialize the Applications API
-		applications = new Applications(keys);
+		client = new RestClient(keys);
 	}
 
 	@Test
 	public void test1ListSync() throws IOException {
-		String sResponse = applications.listSync();
+		String sResponse = client.listSync();
 		
 		// Convert the response into JSON and count the number of applications
 		JSONObject jResponse = new JSONObject(sResponse);
@@ -67,7 +67,7 @@ public class TestApplications {
 	public void test2ShowSync() throws IOException {
 		// log.info("test2ShowSync(" + appId + ")");
 		// appId = 43192210;
-		String sResponse = applications.showSync(appId);
+		String sResponse = client.showSync(appId);
 		
 		// Convert the response into JSON and count the number of applications
 		JSONObject jResponse = new JSONObject(sResponse);
@@ -77,7 +77,7 @@ public class TestApplications {
 
 	@Test
 	public void test3MetricNamesSync() throws IOException {
-		String sResponse = applications.metricNamesSync(appId, null);
+		String sResponse = client.metricNamesSync(appId, null);
 		
 		// Convert the response into JSON and count the number of applications
 		JSONObject jResponse = new JSONObject(sResponse);
@@ -90,7 +90,7 @@ public class TestApplications {
 
 	@Test
 	public void test4MetricDataSync() throws IOException {
-		String sResponse = applications.metricDataSync(appId, METRIC_NAMES);
+		String sResponse = client.metricDataSync(appId, METRIC_NAMES);
 		
 		// Convert the response into JSON and count the number of applications
 		JSONObject jResponse = new JSONObject(sResponse);

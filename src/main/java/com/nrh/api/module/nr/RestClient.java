@@ -10,9 +10,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class Applications {
+public class RestClient {
 
-	private static final Logger log = LoggerFactory.getLogger(Applications.class);
+	private static final Logger log = LoggerFactory.getLogger(RestClient.class);
 			
 	public static final String URL_SCHEME = "https";
 	public static final String URL_HOST = "api.newrelic.com";
@@ -24,7 +24,7 @@ public class Applications {
 	private APIKeyset keys;
 	private OkHttpClient client;
 
-	public Applications(APIKeyset keys) {
+	public RestClient(APIKeyset keys) {
 		this.keys = keys;
 		client = new OkHttpClient();
 		log.debug("Applications API constructed");
