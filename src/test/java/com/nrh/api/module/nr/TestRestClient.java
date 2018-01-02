@@ -25,9 +25,6 @@ public class TestRestClient {
 
 	private static final Logger log = LoggerFactory.getLogger(TestRestClient.class);
 	
-	private static final String METRIC_NAME_METRIC_COUNT = "Agent/MetricsReported/count";
-	private static final String METRIC_NAME_HTTP = "Httpdispatcher";
-
 	private APIKeyset keys;
 	private RestClient client; 
 	
@@ -99,7 +96,7 @@ public class TestRestClient {
 		// There should be more than 0 metrics
 		assertNotEquals(0, jMetrics.length());
 
-		// Grab up to 5 metrics
+		// Grab 2 metrics
 		int i = 0;
 		for ( ; i < jMetrics.length(); i++) {
 			// Don't get more than 5 metrics
@@ -107,25 +104,20 @@ public class TestRestClient {
 				break;
 			}
 			
+			// Add metrics to the list unless they start with Instance
 			String fullName = jMetrics.getJSONObject(i).getString("name");
-			Metric metric = new Metric(fullName);
-			metricList.add(metric);
+			if (!fullName.startsWith("Instance")) {
+				Metric metric = new Metric(fullName);
+				metricList.add(metric);
+				metricCount++;
+			}
 		}
-		
-		// Save the number of metrics collected
-		metricCount = i;
 	}
 
 	@Test
 	public void test4MetricDataSync() throws IOException {
 
-		// ArrayList<Metric> metricNameList = new ArrayList<Metric>();
-		// Metric mCount = new Metric(METRIC_NAME_METRIC_COUNT);
-		// Metric mHttp = new Metric(METRIC_NAME_HTTP);
-		// metricNameList.add(mCount);
-		// metricNameList.add(mHttp);
 		String sResponse = client.metricDataSync(appId, metricList);
-		// log.info(sResponse);
 		
 		// Convert the response into JSON and count the number of applications
 		JSONObject jResponse = new JSONObject(sResponse);
