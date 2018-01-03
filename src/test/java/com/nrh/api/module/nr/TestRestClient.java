@@ -32,6 +32,7 @@ public class TestRestClient {
 	private static int appId;
 	private static int metricCount;
 	private static ArrayList<Metric> metricList = new ArrayList<Metric>();
+	private static String sResponse;
 
 	@Before
 	public void setUp() throws Exception {
@@ -117,7 +118,7 @@ public class TestRestClient {
 	@Test
 	public void test4MetricDataSync() throws IOException {
 
-		String sResponse = client.metricDataSync(appId, metricList);
+		sResponse = client.metricDataSync(appId, metricList);
 		
 		// Convert the response into JSON and count the number of applications
 		JSONObject jResponse = new JSONObject(sResponse);
@@ -135,5 +136,19 @@ public class TestRestClient {
 		// Check that the correct number of metrics were found
 		assertEquals(metricCount, metricsFound.length());
 		assertEquals(0, metricsNotFound.length());
+	}
+
+	@Test
+	public void test5ProcessMetricData() throws IOException {
+		JSONObject jResponse = new JSONObject(sResponse);
+		JSONObject jMetricData = jResponse.getJSONObject("metric_data");
+		
+		// Pull out each metric
+		for (Metric metric : metricList) {
+			metric.parseJSON(jMetricData);
+
+			// There should be 30 timeslices in each metric
+			assertEquals(30, metric.getTimesliceSize());
+		}
 	}
 }
