@@ -1,5 +1,6 @@
 package com.nrh.api.module.nr;
 
+import com.nrh.api.module.nr.dao.Application;
 import com.nrh.api.module.nr.dao.Metric;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -91,6 +92,12 @@ public class RestClient {
 		// Synchronous call
 		Response rsp = Util.callSync(client, req);
 		return rsp.body().string();
+	}
+
+	public String metricDataSync(Application app) throws IOException {
+		int appId = app.getId();
+		ArrayList<Metric> metricNameList = app.getMetricList();
+		return metricDataSync(appId, metricNameList);
 	}
 	
 	/**

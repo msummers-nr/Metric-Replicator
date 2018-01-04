@@ -21,6 +21,12 @@ public class Metric {
     this.fullName = fullName;
   }
 
+  public void parseString(String sMetricData) {
+    JSONObject jResponse = new JSONObject(sMetricData);
+    JSONObject jMetricData = jResponse.getJSONObject("metric_data");
+    parseJSON(jMetricData);
+  }
+
   public void parseJSON(JSONObject jMetricData) {
     JSONArray jMetricsFound = jMetricData.getJSONArray("metrics_found");
     if (metricFound(jMetricsFound)) {
