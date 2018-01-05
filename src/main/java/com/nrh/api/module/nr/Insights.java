@@ -1,7 +1,8 @@
 package com.nrh.api.module.nr;
 
+import com.nrh.api.module.nr.dao.Event;
 import java.io.IOException;
-
+import java.util.ArrayList;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,7 @@ public class Insights {
 	}
 
 	/**
-	 * Call the Insights Insert API to publish these events
+	 * Call the Insights Insert API to publish this JSON Array of events
 	 * 
 	 * @param jEvents
 	 * @return
@@ -62,6 +63,17 @@ public class Insights {
 		// Synchronous call
 		Response rsp = Util.callSync(client, req);
 		return rsp.body().string();
+	}
+
+	/**
+	 * Call the Insights Insert API to publish this list of Event objects
+	 */
+	public String insertSync(ArrayList<Event> eventList) throws IOException {
+		JSONArray jEvents = new JSONArray();
+		for (Event event : eventList) {
+			jEvents.put(event.toJSON());
+		}
+		return insertSync(jEvents);
 	}
 
 	private Request prepQueryRequest(String nrql) {

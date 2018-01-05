@@ -1,9 +1,9 @@
 package com.nrh.api.module.nr.dao;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
-
+import java.util.SortedMap;
+import java.util.TreeMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -15,7 +15,7 @@ public class Metric {
   private String shortName;
   private String fullName;
   private String metricValue;
-  private Map<Date, Timeslice> timeslices = new HashMap<Date, Timeslice>();
+  private TreeMap<Date, Timeslice> tsMap = new TreeMap<Date, Timeslice>();
 
   public Metric(String fullName) {
     this.fullName = fullName;
@@ -53,8 +53,8 @@ public class Metric {
       ts.parseJSON(jTimeslice);
       
       // Store this timeslice in the map
-      Date to = ts.getFrom();
-      timeslices.put(to, ts);
+      Date to = ts.getTo();
+      tsMap.put(to, ts);
     }
   }
 
@@ -68,6 +68,42 @@ public class Metric {
     return false;
   }
 
+  /**
+   * @return the timeslices
+   */
+  public Map<Date, Timeslice> getTsMap() {
+    return tsMap;
+  }
+
+  /**
+   * @return the timeslices since that date
+   */
+  public SortedMap<Date, Timeslice> getTimeslicesSince(Date latest) {
+    if (latest == null) {
+      latest = new Date(0);
+    }
+    SortedMap<Date, Timeslice> tailMap = tsMap.tailMap(latest, false);
+    log.debug("* " + getName() + " has " + tailMap.size() + " slices since " + latest);
+    return tailMap;
+  }
+
+  public int getTimesliceSize() {
+    return tsMap.size();
+  }
+
+  public Timeslice getLastTimeslice() {
+    return tsMap.lastEntry().getValue();
+  }
+
+  /**
+   * @return the shortName if set, fullName otherwise
+   */
+  public String getName() {
+    if (shortName == null) {
+      return fullName;
+    }
+    return shortName;
+  }
   /**
    * @return the fullName
    */
@@ -103,16 +139,5 @@ public class Metric {
    */
   public void setMetricValue(String metricValue) {
     this.metricValue = metricValue;
-  }
-
-  /**
-   * @return a specific timeslice based on the "to" date
-   */
-  public Timeslice getTimeslice(Date date) {
-    return timeslices.get(date);
-  }
-
-  public int getTimesliceSize() {
-    return timeslices.size();
   }
 }

@@ -22,7 +22,7 @@ public class Timeslice {
 
   private Date from;
   private Date to;
-  private Map<String, Double> values = new HashMap<String, Double>();
+  private Map<String, Double> valueMap = new HashMap<String, Double>();
 
   /**
    * 
@@ -34,7 +34,7 @@ public class Timeslice {
     while (iter.hasNext()) {
       String key = iter.next();
       Double value = jValues.getDouble(key);
-      values.put(key, value);
+      valueMap.put(key, value);
     }
   }
 
@@ -64,11 +64,18 @@ public class Timeslice {
     return to;
   }
 
+  /**
+   * @return the values
+   */
+  public Map<String, Double> getValueMap() {
+    return valueMap;
+  }
+
   public void addValue(String key, Double value) {
-    values.put(key, value);
+    valueMap.put(key, value);
   }
 
   public Double getValue(String key) {
-    return values.get(key);
+    return valueMap.get(key);
   }
 }

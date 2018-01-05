@@ -11,7 +11,7 @@ public class Application {
   private int id;
 
   private String name;
-  private ArrayList<Metric> metricList;
+  private ArrayList<Metric> metricList = new ArrayList<Metric>();
   
   public Application(int id, String name) {
     this.id = id;
@@ -42,6 +42,7 @@ public class Application {
   public void setName(String name) {
     this.name = name;
   }
+  
   /**
    * @return the metricList
    */
@@ -53,5 +54,21 @@ public class Application {
    */
   public void setMetricList(ArrayList<Metric> metricList) {
     this.metricList = metricList;
+  }
+
+  public void addNewMetric(String fullName, String shortName) {
+    Metric metric = new Metric(fullName);
+    metric.setShortName(shortName);
+    // metricMap.put(fullName, metric);
+    metricList.add(metric);
+  }
+
+  public Metric getMetric(String metricName) {
+    for (Metric metric : metricList) {
+      if (metricName.equals(metric.getName())) {
+        return metric;
+      }
+    }
+    return null;
   }
 }
