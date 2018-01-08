@@ -38,6 +38,72 @@ BUILD SUCCESSFUL
 Total time: 6.39 secs
 ```
 
+# Tasks
+In addition to including Java libraries for working with the API, this project also can run as a Spring Boot application. Developers can create tasks such as an ETL-style program for working with the API on a regular schedule. There are currently a couple of tasks available.
+
+## Metrics Copier Task
+This task will copy metrics from a source account (through the Applications API) and publish to a destination account (through the Insights Insert API). You configure the task with a config section like this:
+```
+	tasks {
+		metricsCopier {
+			enabled = true
+			
+			dest = {
+				account = "ABC"
+				eventType = "MetricTest1"
+			}
+			
+			source = {
+				account = "DEF"
+				
+				applicationList = [
+					"Storefront"
+					"Order Service"
+					"User Service"
+					"Inventory Service"
+				]
+				
+				applications = {
+					"Storefront".appId = 123
+					"Order Service".appId = 456
+					"User Service".appId = 789
+					"Inventory Service".appId = 101112
+				}
+
+				metricList = [
+					"MetricsReported"
+					"Errors"
+					"HttpDispatcher"
+				]
+
+				metrics = {
+					"MetricsReported" = {
+						mName = "Agent/MetricsReported/count"
+					}
+					"Errors" = {
+						mName = "Errors/all"
+					}
+					"HttpDispatcher" = {
+						mName = "HttpDispatcher"
+					}
+				}
+			}
+		}
+```
+
+Here are all the sections underneath `tasks.metricsCopier`:
+* `enabled` (default: false) - set to true so you can use this task
+* `dest.account` - where you want to publish the results (needs to match the name of an account from the accounts section)
+* `dest.eventType` - name of the eventType in Insights for the created events
+* `source.account` - where you will query for data (needs to match the name of an account from the accounts section)
+* `source.applicationList` - array of applications you will use (names must match below)
+* `source.applications` - object with the application names and appIds, note the syntax required
+* `source.metricList` - array of metrics you will use (names must match below)
+* `source.metrics` - object with the metric short names and long names, note the syntax required
+
+## Synthetics Copier Task
+TBD
+
 # API Details
 There are multiple API systems involved, these tables have additional details.
 
