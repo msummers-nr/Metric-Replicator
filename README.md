@@ -5,16 +5,16 @@ Java library for interfacing with New Relic APIs
 ## Setting up your credentials
 There is a template config file in the config directory, it is in [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format. You can make a copy of this file for your own configuration. The config uses different identifiers, this section of the documentation covers [API Keys](https://docs.newrelic.com/docs/apis/rest-api-v2/getting-started/api-keys) and how they are used.
 
-| Type | Name | Description |
-|---|---|---|
-| Label | accountName | Just a label to help know the name of the account, used in logging. |
-| Label | adminName | A label to know who is the owner of the Admin API Key. |
-| ID | accountId | The [Account ID](https://docs.newrelic.com/docs/accounts-partnerships/accounts/account-setup/account-id) is required to query data from your account. |
-| API Key | licenseKey | The [License Key](https://docs.newrelic.com/docs/accounts-partnerships/accounts/account-setup/license-key) is used for Agents or Plugins to send data to your account. |
-| API Key | restKey | The [Rest API Key](https://docs.newrelic.com/docs/apis/rest-api-v2/getting-started/api-keys) can be used to query certain kinds of data, it's recommended to use an Admin Key which provides more flexibility. |
-| API Key | adminKey | The [Admin API Key](https://docs.newrelic.com/docs/apis/rest-api-v2/getting-started/api-keys) is like the Rest API Key but tied to a single admin user, there are also a few API calls that require this key. |
-| API Key | insightsQueryKey | The [Insights Query API Key](https://docs.newrelic.com/docs/insights/insights-api/get-data/query-insights-event-data-api) is used to run NRQL queries and process the results. |
-| API Key | insightsInsertKey |The [Insights Insert API Key](https://docs.newrelic.com/docs/insights/insights-data-sources/custom-data/insert-custom-events-insights-api) is used to publish custom events into Insights. |
+| Name | Description |
+|---|---|
+| accountName | Just a label to help know the name of the account, used in logging. |
+| adminName | A label to know who is the owner of the Admin API Key. |
+| accountId | The [Account ID](https://docs.newrelic.com/docs/accounts-partnerships/accounts/account-setup/account-id) is required to query data from your account. |
+| licenseKey | The [License Key](https://docs.newrelic.com/docs/accounts-partnerships/accounts/account-setup/license-key) is used for Agents or Plugins to send data to your account. |
+| restKey | The [Rest API Key](https://docs.newrelic.com/docs/apis/rest-api-v2/getting-started/api-keys) can be used to query certain kinds of data, it's recommended to use an Admin Key which provides more flexibility. |
+| adminKey | The [Admin API Key](https://docs.newrelic.com/docs/apis/rest-api-v2/getting-started/api-keys) is like the Rest API Key but tied to a single admin user, there are also a few API calls that require this key. |
+| insightsQueryKey | The [Insights Query API Key](https://docs.newrelic.com/docs/insights/insights-api/get-data/query-insights-event-data-api) is used to run NRQL queries and process the results. |
+| insightsInsertKey |The [Insights Insert API Key](https://docs.newrelic.com/docs/insights/insights-data-sources/custom-data/insert-custom-events-insights-api) is used to publish custom events into Insights. |
 
 ## Using your custom config
 Once you make a copy of config/template.conf to your own file, then you reference it with `-Dconfig.file` at runtime.
@@ -39,6 +39,7 @@ Total time: 6.39 secs
 ```
 
 # API Details
+There are multiple API systems involved, these tables have additional details.
 
 ## APIs Supported
 | Type | Status | Description |
@@ -50,11 +51,11 @@ Total time: 6.39 secs
 
 ## APIs To Do
 | Type | Description |
-|---|---|---|
+|---|---|
 | Rest v2 API (not Alerts) | Need to add support for other endpoints (Mobile, Browser, Alerts, etc.) |
 | Rest v2 API (Alerts) | Need all capabilities |
 | Insights API | Needs an ability to potentially return results as DAO |
-| Synthetics API | Not supported yet | CRUD functionality for Synthetic Monitors |
+| Synthetics API | Need all capabilities |
 
 ## Deprecated / Will Not Support
 * Servers
