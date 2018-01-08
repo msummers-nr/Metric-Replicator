@@ -89,6 +89,7 @@ This task will copy metrics from a source account (through the Applications API)
 				}
 			}
 		}
+  }
 ```
 
 Here are all the sections underneath `tasks.metricsCopier`:
