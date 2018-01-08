@@ -1,6 +1,7 @@
 package com.nrh.api.module.nr.dao;
 
 import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -17,58 +18,47 @@ public class Application {
     this.id = id;
     this.name = name;
   }
-  
-  /**
-   * @return the id
-   */
-  public int getId() {
-    return id;
-  }
-  /**
-   * @param id the id to set
-   */
-  public void setId(int id) {
-    this.id = id;
-  }
-  /**
-   * @return the name
-   */
-  public String getName() {
-    return name;
-  }
-  /**
-   * @param name the name to set
-   */
-  public void setName(String name) {
-    this.name = name;
-  }
-  
-  /**
-   * @return the metricList
-   */
-  public ArrayList<Metric> getMetricList() {
-    return metricList;
-  }
-  /**
-   * @param metricList the metricList to set
-   */
-  public void setMetricList(ArrayList<Metric> metricList) {
-    this.metricList = metricList;
+
+  public void setMetricList(List<Metric> metricList) {
+    for (Metric metric : metricList) {
+      String fullName = metric.getFullName();
+      String shortName = metric.getFullName();
+
+      addNewMetric(fullName, shortName);
+    }
   }
 
   public void addNewMetric(String fullName, String shortName) {
-    Metric metric = new Metric(fullName);
-    metric.setShortName(shortName);
-    // metricMap.put(fullName, metric);
+    Metric metric = new Metric(fullName, shortName);
     metricList.add(metric);
   }
 
-  public Metric getMetric(String metricName) {
+  public Metric getMetric(String fullName) {
     for (Metric metric : metricList) {
-      if (metricName.equals(metric.getName())) {
+      if (fullName.equals(metric.getFullName())) {
         return metric;
       }
     }
     return null;
+  }
+
+  public String toString() {
+    return name + " (" + id + ")";
+  }
+  
+  public int getId() {
+    return id;
+  }
+  public void setId(int id) {
+    this.id = id;
+  }
+  public String getName() {
+    return name;
+  }
+  public void setName(String name) {
+    this.name = name;
+  }
+  public ArrayList<Metric> getMetricList() {
+    return metricList;
   }
 }

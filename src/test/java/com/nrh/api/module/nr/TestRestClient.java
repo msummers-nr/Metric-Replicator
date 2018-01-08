@@ -108,7 +108,7 @@ public class TestRestClient {
 			// Add metrics to the list unless they start with Instance
 			String fullName = jMetrics.getJSONObject(i).getString("name");
 			if (!fullName.startsWith("Instance")) {
-				Metric metric = new Metric(fullName);
+				Metric metric = new Metric(fullName, null);
 				metricList.add(metric);
 				metricCount++;
 			}

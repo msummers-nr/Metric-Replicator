@@ -17,8 +17,13 @@ public class Metric {
   private String metricValue;
   private TreeMap<Date, Timeslice> tsMap = new TreeMap<Date, Timeslice>();
 
-  public Metric(String fullName) {
+  // public Metric(String fullName) {
+  //   this.fullName = fullName;
+  // }
+
+  public Metric(String fullName, String shortName) {
     this.fullName = fullName;
+    this.shortName = shortName;
   }
 
   public void parseString(String sMetricData) {
@@ -83,7 +88,7 @@ public class Metric {
       latest = new Date(0);
     }
     SortedMap<Date, Timeslice> tailMap = tsMap.tailMap(latest, false);
-    log.debug("* " + getName() + " has " + tailMap.size() + " slices since " + latest);
+    log.debug("* " + fullName + " has " + tailMap.size() + " slices since " + latest);
     return tailMap;
   }
 
@@ -98,12 +103,12 @@ public class Metric {
   /**
    * @return the shortName if set, fullName otherwise
    */
-  public String getName() {
-    if (shortName == null) {
-      return fullName;
-    }
-    return shortName;
-  }
+  // public String getName() {
+  //   if (shortName == null) {
+  //     return fullName;
+  //   }
+  //   return shortName;
+  // }
   /**
    * @return the fullName
    */
@@ -139,5 +144,9 @@ public class Metric {
    */
   public void setMetricValue(String metricValue) {
     this.metricValue = metricValue;
+  }
+
+  public String toString() {
+    return shortName + " (" + fullName + ")";
   }
 }
