@@ -1,4 +1,4 @@
-package com.nrh.api.module.nr.task.metrics;
+package com.nrh.api.module.task.metrics;
 
 import com.nrh.api.module.nr.dao.*;
 

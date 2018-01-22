@@ -1,4 +1,4 @@
-package com.nrh.api.module.nr.task.synthetics;
+package com.nrh.api.module.task.synthetics;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Runtime {
+public class RuntimeHelper {
   
   private static final Logger log = LoggerFactory.getLogger(Runtime.class);
   

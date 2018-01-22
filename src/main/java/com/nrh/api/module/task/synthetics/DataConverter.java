@@ -1,4 +1,4 @@
-package com.nrh.api.module.nr.task.synthetics;
+package com.nrh.api.module.task.synthetics;
 
 import java.util.HashMap;
 import java.util.Map;

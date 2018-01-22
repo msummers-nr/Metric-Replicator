@@ -1,4 +1,4 @@
-package com.nrh.api.module.nr.task.synthetics;
+package com.nrh.api.module.task.synthetics;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -11,8 +11,8 @@ public class DataFormatPlugin {
   public DataFormatPlugin() {
     // Initialize the agent section
     jAgent = new JSONObject();
-    jAgent.put("host", Runtime.getHostName());
-    jAgent.put("pid", Runtime.getPid());
+    jAgent.put("host", RuntimeHelper.getHostName());
+    jAgent.put("pid", RuntimeHelper.getPid());
     jAgent.put("version", SyntheticsCopier.VERSION);
     
     // Initialize the components[]

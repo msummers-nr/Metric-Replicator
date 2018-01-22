@@ -1,4 +1,4 @@
-package com.nrh.api.module.nr.task.synthetics;
+package com.nrh.api.module.task.synthetics;
 
 import java.util.Date;
 import java.util.Iterator;
