@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.newrelic.api.agent.Trace;
 import com.nrh.api.module.nr.Insights;
 import com.nrh.api.module.nr.dao.*;
 
@@ -25,6 +26,7 @@ public class ExtractInsights {
     destInsights = new Insights(copierConfig.getDestKeys());
   }
   
+  @Trace
   public Map<Metric, Date> queryInsights() throws IOException {
     
     // Use the correct eventType

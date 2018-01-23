@@ -1,5 +1,6 @@
 package com.nrh.api.module.task.metrics;
 
+import com.newrelic.api.agent.Trace;
 import com.nrh.api.module.nr.dao.*;
 
 import java.io.IOException;
@@ -45,6 +46,7 @@ public class MetricsCopier {
    * This task runs at :00 and :30 every minute
    */
   @Scheduled(cron = "*/30 * * * * *")
+  @Trace(dispatcher=true)
   public void copy() throws IOException {
     
     // Extract from both insights and the REST API

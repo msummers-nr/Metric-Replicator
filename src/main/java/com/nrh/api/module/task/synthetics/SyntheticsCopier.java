@@ -1,5 +1,6 @@
 package com.nrh.api.module.task.synthetics;
 
+import com.newrelic.api.agent.Trace;
 import com.nrh.api.APIApplication;
 import com.nrh.api.module.nr.APIKeyset;
 import com.nrh.api.module.nr.Insights;
@@ -43,6 +44,7 @@ public class SyntheticsCopier {
    * This task runs at :00 and :30 every minute
    */
   @Scheduled(cron = "*/30 * * * * *")
+  @Trace(dispatcher=true)
   public void start() throws IOException {
     
     // Extract from Insights

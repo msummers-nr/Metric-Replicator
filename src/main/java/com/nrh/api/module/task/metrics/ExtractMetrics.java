@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.newrelic.api.agent.Trace;
 import com.nrh.api.module.nr.RestClient;
 import com.nrh.api.module.nr.dao.*;
 
@@ -23,6 +24,7 @@ public class ExtractMetrics {
     srcRestClient = new RestClient(copierConfig.getSourceKeys());
   }
   
+  @Trace
   public Map<String, Application> queryMetricData() throws IOException {
     
     // Loop through the applications

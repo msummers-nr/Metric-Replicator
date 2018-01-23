@@ -1,5 +1,6 @@
 package com.nrh.api.module.task.metrics;
 
+import com.newrelic.api.agent.Trace;
 import com.nrh.api.module.nr.dao.Application;
 import com.nrh.api.module.nr.dao.Event;
 import com.nrh.api.module.nr.dao.Metric;
@@ -33,6 +34,7 @@ public class Transform {
   /**
    * Convert the metric data into event data
    */
+  @Trace
   public ArrayList<Event> toEvents(Map<Metric, Date> latestMap, Map<String, Application> appMap) {
     this.latestMap = latestMap;
 
