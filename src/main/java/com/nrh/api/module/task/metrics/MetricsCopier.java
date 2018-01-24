@@ -22,7 +22,7 @@ public class MetricsCopier {
   private CopierConfig config;
   private ExtractInsights extractInsights;
   private ExtractMetrics extractMetrics;
-  private Transform transform;
+  // private Transform transform;
   private Load load;
 
   public MetricsCopier() {
@@ -36,7 +36,7 @@ public class MetricsCopier {
     extractMetrics = new ExtractMetrics(config);
     
     // Initialize the Transform
-    transform = new Transform(config);
+    // transform = new Transform(config);
 
     // Initialize the Load
     load = new Load(config);
@@ -54,6 +54,7 @@ public class MetricsCopier {
     Map<String, Application> appMap = extractMetrics.queryMetricData();
 
     // Transform to events then load to the destination account
+    Transform transform = new Transform(config);
     ArrayList<Event> eventList = transform.toEvents(latestMap, appMap);
     load.post(eventList);
 
