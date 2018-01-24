@@ -1,5 +1,6 @@
 package com.nrh.api.module.task.metrics;
 
+import com.newrelic.api.agent.NewRelic;
 import com.newrelic.api.agent.Trace;
 import com.nrh.api.module.nr.dao.Application;
 import com.nrh.api.module.nr.dao.Event;
@@ -43,6 +44,7 @@ public class Transform {
       Application app = appMap.get(appName);
       processApp(app);
     }
+    NewRelic.addCustomParameter("metricCopierEvents", eventList.size());
     log.info("Transform complete, we have " + eventList.size() + " events to post");
 
     return eventList;

@@ -59,5 +59,6 @@ public class MetricsCopier {
 
     // Clean up
     transform.clearEvents();
+    log.info("Complete");
   }
 }

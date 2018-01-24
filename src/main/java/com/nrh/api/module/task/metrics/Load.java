@@ -20,7 +20,7 @@ public class Load {
   @Trace
   public void post(ArrayList<Event> eventList) throws IOException {
     if (eventList.size() > 0) {
-      log.info("There are " + eventList.size() + " events to post");
+      // log.info("There are " + eventList.size() + " events to post");
       String sResponse = insights.insertSync(eventList);
       log.info(sResponse);
     }

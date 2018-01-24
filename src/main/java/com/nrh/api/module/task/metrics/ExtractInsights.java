@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.newrelic.api.agent.Trace;
 import com.nrh.api.module.nr.Insights;
 import com.nrh.api.module.nr.dao.*;
@@ -48,7 +49,7 @@ public class ExtractInsights {
   private JSONArray runQuery(String nrqlLive) throws IOException {
     
     // Query Insights
-    log.info(nrqlLive);
+    // log.info(nrqlLive);
     String sResponse = destInsights.querySync(nrqlLive);
     JSONObject jResponse = new JSONObject(sResponse);
     JSONArray jFacets = jResponse.getJSONArray("facets");
