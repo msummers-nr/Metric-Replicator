@@ -7,16 +7,16 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.nrh.api.module.nr.Insights;
+import com.nrh.api.module.nr.client.InsightsAPI;
 
 public class Extract {
   private static final Logger log = LoggerFactory.getLogger(Extract.class);
   private static final String NRQL_UNIQUES = "SELECT uniques(locationLabel) FROM SyntheticCheck";
-  private Insights insights;
+  private InsightsAPI insights;
   private JSONArray jLocations;
   private JSONObject jMonitorData;
   
-  public Extract(Insights insights) throws IOException {
+  public Extract(InsightsAPI insights) throws IOException {
     this.insights = insights;
     queryLocationData();
     queryMonitorData();

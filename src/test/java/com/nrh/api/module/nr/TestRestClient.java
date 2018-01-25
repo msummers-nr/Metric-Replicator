@@ -4,8 +4,6 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -15,9 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 import com.nrh.api.APIApplication;
-import com.nrh.api.module.nr.APIKeyset;
-import com.nrh.api.module.nr.RestClient;
-import com.nrh.api.module.nr.dao.Metric;
+import com.nrh.api.module.nr.config.*;
+import com.nrh.api.module.nr.model.*;
+import com.nrh.api.module.nr.client.rest.ApplicationsAPI;
 
 @RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -26,14 +24,14 @@ public class TestRestClient {
 	private static final Logger log = LoggerFactory.getLogger(TestRestClient.class);
 	
 	private APIKeyset keys;
-	private RestClient client; 
+	private ApplicationsAPI client; 
 	
 	// These values are used by the ordered test cases so they are static
 	private static int appId;
+	private static String appName;
 	private static int metricCount;
-	private static ArrayList<Metric> metricList = new ArrayList<Metric>();
-	private static String sResponse;
-
+	private static MetricDataConfig metricDataConfig;
+	
 	@Before
 	public void setUp() throws Exception {
 		
@@ -47,69 +45,86 @@ public class TestRestClient {
 		log.info("Application API Test using keyset for account: " + keys.getAccountName());
 		
 		// Initialize the Applications API
-		client = new RestClient(keys);
+		client = new ApplicationsAPI(keys);
 	}
 
 	@Test
 	public void test1ListSync() throws IOException {
-		String sResponse = client.listSync();
+		AppListConfig cfg = new AppListConfig();
+		ArrayList<AppModel> appList = client.list(cfg);
+		log.info("Number of applications: " + appList.size());
 		
-		// Convert the response into JSON and count the number of applications
-		JSONObject jResponse = new JSONObject(sResponse);
-		JSONArray jApplications = jResponse.getJSONArray("applications");
-		log.info("Number of applications: " + jApplications.length());
+		assertNotEquals(0, appList.size());
 		
-		// There should be more than 0 applications
-		assertNotEquals(0, jApplications.length());
+		AppModel appModel = appList.get(0);
+		appId = appModel.getId();
+		appName = appModel.getName();
+		metricDataConfig = new MetricDataConfig(appId, appName);
+
+		// // Convert the response into JSON and count the number of applications
+		// JSONObject jResponse = new JSONObject(sResponse);
+		// JSONArray jApplications = jResponse.getJSONArray("applications");
+		// log.info("Number of applications: " + jApplications.length());
 		
-		// Store the application id from the first in the array
-		for (int i=0; i < jApplications.length(); i++) {
-			JSONObject jApp = jApplications.getJSONObject(i);
-			boolean bReporting = jApp.getBoolean("reporting");
-			if (bReporting) {
-				appId = jApp.getInt("id");
-				break;
-			}
-		}
+		// // There should be more than 0 applications
+		// assertNotEquals(0, jApplications.length());
+		
+		// // Store the application id from the first in the array
+		// for (int i=0; i < jApplications.length(); i++) {
+		// 	JSONObject jApp = jApplications.getJSONObject(i);
+		// 	boolean bReporting = jApp.getBoolean("reporting");
+		// 	if (bReporting) {
+		// 		appId = jApp.getInt("id");
+		// 		break;
+		// 	}
+		// }
 		// appId = jApplications.getJSONObject(0).getInt("id");
 		log.info("Setting appId to this reporting app: " + appId);
 	}
 	
 	@Test
 	public void test2ShowSync() throws IOException {
-		String sResponse = client.showSync(appId);
+		// String sResponse = client.showSync(appId);
+		AppModel appModel = client.show(appId);
+		assertEquals(appId, appModel.getId());
 		
-		// Convert the response into JSON and count the number of applications
-		JSONObject jResponse = new JSONObject(sResponse);
-		int returnedAppId = jResponse.getJSONObject("application").getInt("id");
-		assertEquals(appId, returnedAppId);
+		// // Convert the response into JSON and count the number of applications
+		// JSONObject jResponse = new JSONObject(sResponse);
+		// int returnedAppId = jResponse.getJSONObject("application").getInt("id");
+		// assertEquals(appId, returnedAppId);
 	}
 
 	@Test
 	public void test3MetricNamesSync() throws IOException {
-		String sResponse = client.metricNamesSync(appId, null);
+		// String sResponse = client.metricNamesSync(appId, null);
+		MetricNamesConfig cfg = new MetricNamesConfig(appId);
+		ArrayList<MetricNameModel> metricNameList = client.metricNames(cfg);
 		
-		// Convert the response into JSON and count the number of applications
-		JSONObject jResponse = new JSONObject(sResponse);
-		JSONArray jMetrics = jResponse.getJSONArray("metrics");
-		log.info("Number of metrics: " + jMetrics.length());
+		// // Convert the response into JSON and count the number of applications
+		// JSONObject jResponse = new JSONObject(sResponse);
+		// JSONArray jMetrics = jResponse.getJSONArray("metrics");
+		// log.info("Number of metrics: " + jMetrics.length());
 
 		// There should be more than 0 metrics
-		assertNotEquals(0, jMetrics.length());
+		assertNotEquals(0, metricNameList.size());
 
 		// Grab 2 metrics
 		int i = 0;
-		for ( ; i < jMetrics.length(); i++) {
+		for ( ; i < metricNameList.size(); i++) {
 			// Don't get more than 5 metrics
 			if (i == 5) {
 				break;
 			}
 			
+			MetricNameModel metricNameModel = metricNameList.get(i);
+			String fullName = metricNameModel.getName();
+
 			// Add metrics to the list unless they start with Instance
-			String fullName = jMetrics.getJSONObject(i).getString("name");
+			// String fullName = jMetrics.getJSONObject(i).getString("name");
 			if (!fullName.startsWith("Instance")) {
-				Metric metric = new Metric(fullName, null);
-				metricList.add(metric);
+				metricDataConfig.addMetricName(fullName);
+				// Metric metric = new Metric(fullName, null);
+				// metricList.add(metric);
 				metricCount++;
 			}
 		}
@@ -118,37 +133,38 @@ public class TestRestClient {
 	@Test
 	public void test4MetricDataSync() throws IOException {
 
-		sResponse = client.metricDataSync(appId, metricList);
+		// sResponse = client.metricDataSync(appId, metricList);
+		ArrayList<MetricDataModel> metricDataList = client.metricData(metricDataConfig);
 		
 		// Convert the response into JSON and count the number of applications
-		JSONObject jResponse = new JSONObject(sResponse);
+		// JSONObject jResponse = new JSONObject(sResponse);
 		
-		// There should be {metricCount} metrics found
-		JSONArray metricsFound = jResponse.getJSONObject("metric_data").getJSONArray("metrics_found");
-		log.info("Count of metrics found: " + metricsFound.length());
-		log.info(metricsFound.toString());
+		// // There should be {metricCount} metrics found
+		// JSONArray metricsFound = jResponse.getJSONObject("metric_data").getJSONArray("metrics_found");
+		// log.info("Count of metrics found: " + metricsFound.length());
+		// log.info(metricsFound.toString());
 
-		// There should be 0 metrics not found
-		JSONArray metricsNotFound = jResponse.getJSONObject("metric_data").getJSONArray("metrics_not_found");
-		log.info("Count of metrics not found: " + metricsNotFound.length());
-		log.info(metricsNotFound.toString());
+		// // There should be 0 metrics not found
+		// JSONArray metricsNotFound = jResponse.getJSONObject("metric_data").getJSONArray("metrics_not_found");
+		// log.info("Count of metrics not found: " + metricsNotFound.length());
+		// log.info(metricsNotFound.toString());
 		
 		// Check that the correct number of metrics were found
-		assertEquals(metricCount, metricsFound.length());
-		assertEquals(0, metricsNotFound.length());
+		assertEquals(metricCount, metricDataList.size());
+		// assertEquals(0, metricsNotFound.length());
 	}
 
-	@Test
-	public void test5ProcessMetricData() throws IOException {
-		JSONObject jResponse = new JSONObject(sResponse);
-		JSONObject jMetricData = jResponse.getJSONObject("metric_data");
+	// @Test
+	// public void test5ProcessMetricData() throws IOException {
+	// 	JSONObject jResponse = new JSONObject(sResponse);
+	// 	JSONObject jMetricData = jResponse.getJSONObject("metric_data");
 		
-		// Pull out each metric
-		for (Metric metric : metricList) {
-			metric.parseJSON(jMetricData);
+	// 	// Pull out each metric
+	// 	for (Metric metric : metricList) {
+	// 		metric.parseJSON(jMetricData);
 
-			// There should be 30 timeslices in each metric
-			assertEquals(30, metric.getTimesliceSize());
-		}
-	}
+	// 		// There should be 30 timeslices in each metric
+	// 		assertEquals(30, metric.getTimesliceSize());
+	// 	}
+	// }
 }

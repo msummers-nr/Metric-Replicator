@@ -1,6 +1,7 @@
-package com.nrh.api.module.nr;
+package com.nrh.api.module.nr.client;
 
-import com.nrh.api.module.nr.dao.Event;
+import com.nrh.api.module.nr.config.APIKeyset;
+import com.nrh.api.module.nr.model.Event;
 import java.io.IOException;
 import java.util.ArrayList;
 import org.json.JSONArray;
@@ -14,9 +15,9 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class Insights {
+public class InsightsAPI {
 	
-	private static final Logger log = LoggerFactory.getLogger(Insights.class);
+	private static final Logger log = LoggerFactory.getLogger(InsightsAPI.class);
 	
 	public static final String URL_SCHEME = "https";
 	public static final String URL_QUERY_HOST = "insights-api.newrelic.com";
@@ -27,7 +28,7 @@ public class Insights {
 	private APIKeyset keys;
 	private OkHttpClient client;
 	
-	public Insights(APIKeyset keys) {
+	public InsightsAPI(APIKeyset keys) {
 		this.keys = keys;
 		client = new OkHttpClient();
 	}

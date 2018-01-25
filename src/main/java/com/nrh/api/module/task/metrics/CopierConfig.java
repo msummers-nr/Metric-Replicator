@@ -1,14 +1,11 @@
 package com.nrh.api.module.task.metrics;
 
 import com.nrh.api.APIApplication;
-import com.nrh.api.module.nr.APIKeyset;
-import com.nrh.api.module.nr.dao.Application;
-import com.nrh.api.module.nr.dao.Metric;
+import com.nrh.api.module.nr.config.APIKeyset;
+import com.nrh.api.module.nr.config.MetricDataConfig;
 import com.typesafe.config.Config;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,18 +20,14 @@ public class CopierConfig {
   private String eventType;
   private Config conf;
 
-  private Map<String, Application> appMap;
+  private ArrayList<MetricDataConfig> cfgList;
 
   public CopierConfig() {
     this.conf = APIApplication.getConfig();
-    this.appMap = new HashMap<>();
+    this.cfgList = new ArrayList<>();
 
     readSourceConfig();
     readDestConfig();
-  }
-
-  public Application getApplication(String appName) {
-    return appMap.get(appName);
   }
 
   private void readSourceConfig() {
@@ -46,7 +39,8 @@ public class CopierConfig {
     String sSourceAccount = APIApplication.getConfString(sPropSourceAccount);
     sourceKeys = new APIKeyset(APIApplication.getConfig(), sSourceAccount);
 
-    // Read the metrics
+    // Read the applications section, then the metrics section
+    readSourceApps(sProp);
     readSourceMetrics(sProp);
   }
 
@@ -56,19 +50,21 @@ public class CopierConfig {
     List<String> sMetricList = conf.getStringList(sPropMetricList);
 
     // Create a Metric object for each metric
-    List<Metric> metricList = new ArrayList<>();
+    ArrayList<String> metricList = new ArrayList<>();
     for (String shortName : sMetricList) {
       String sPropMetricFullName = sProp + ".metrics." + shortName + ".mName";
       String fullName = conf.getString(sPropMetricFullName);
-      Metric metric = new Metric(fullName, shortName);
-      metricList.add(metric);
-      log.info("* adding metric: " + metric);
+      metricList.add(fullName);
     }
+    log.info("Loaded " + metricList.size() + " metric names from config");
 
-    readSourceApps(sProp, metricList);
+    // Add all of the metrics to all of the configs
+    for (MetricDataConfig cfg : cfgList) {
+      cfg.setMetricNameList(metricList);
+    }
   }
 
-  private void readSourceApps(String sProp, List<Metric> metricList) {
+  private void readSourceApps(String sProp) {
     // Get the list of apps
     String sPropAppList = sProp + ".applicationList";
     List<String> sAppList = conf.getStringList(sPropAppList);
@@ -76,12 +72,12 @@ public class CopierConfig {
     // Create an Application object for each app
     for (String appName : sAppList) {
       String sPropAppId = sProp + ".applications." + appName + ".appId";
-      int iAppId = conf.getInt(sPropAppId);
-      Application app = new Application(iAppId, appName);
-      app.setMetricList(metricList);
-      appMap.put(appName, app);
-      log.info("* adding application: " + app);
+      Integer appId = conf.getInt(sPropAppId);
+      MetricDataConfig cfg = new MetricDataConfig(appId, appName);
+      cfgList.add(cfg);
     }
+
+    log.info("Loaded " + cfgList.size() + " apps from config");
   }
 
   private void readDestConfig() {
@@ -108,7 +104,7 @@ public class CopierConfig {
   public String getEventType() {
     return eventType;
   }
-  public Map<String, Application> getAppMap() {
-    return appMap;
+  public ArrayList<MetricDataConfig> getCfgList() {
+    return cfgList;
   }
 }

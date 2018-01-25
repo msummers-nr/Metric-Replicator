@@ -1,4 +1,4 @@
-package com.nrh.api.module.nr;
+package com.nrh.api.module.nr.config;
 
 import com.nrh.api.APIApplication;
 import com.typesafe.config.Config;

@@ -2,9 +2,9 @@ package com.nrh.api.module.task.synthetics;
 
 import com.newrelic.api.agent.Trace;
 import com.nrh.api.APIApplication;
-import com.nrh.api.module.nr.APIKeyset;
-import com.nrh.api.module.nr.Insights;
-import com.nrh.api.module.nr.Plugins;
+import com.nrh.api.module.nr.config.APIKeyset;
+import com.nrh.api.module.nr.client.InsightsAPI;
+import com.nrh.api.module.nr.client.PluginsAPI;
 
 import java.io.IOException;
 import org.slf4j.Logger;
@@ -25,8 +25,8 @@ public class SyntheticsCopier {
   public static final String GUID = "com.adg.synthetics.monitor.Synthetics";
   public static final String VERSION = "2.1.1";
   
-  private Insights insights;
-  private Plugins plugins;
+  private InsightsAPI insights;
+  private PluginsAPI plugins;
 
   public SyntheticsCopier() {
     log.info("Initializing v" + VERSION);
@@ -34,10 +34,10 @@ public class SyntheticsCopier {
     // Initialize the Insights and Plugins API objects
     String sourceAccount = APIApplication.getConfString(PROP_SOURCE);
     APIKeyset sourceKeys = new APIKeyset(APIApplication.getConfig(), sourceAccount);
-    insights = new Insights(sourceKeys);
+    insights = new InsightsAPI(sourceKeys);
     String destAccount = APIApplication.getConfString(PROP_DEST);
     APIKeyset destKeys = new APIKeyset(APIApplication.getConfig(), destAccount);
-    plugins = new Plugins(destKeys);
+    plugins = new PluginsAPI(destKeys);
   }
 
   /**

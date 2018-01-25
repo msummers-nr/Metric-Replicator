@@ -10,25 +10,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.newrelic.api.agent.Trace;
-import com.nrh.api.module.nr.Insights;
-import com.nrh.api.module.nr.dao.*;
+import com.nrh.api.module.nr.client.InsightsAPI;
+import com.nrh.api.module.nr.model.MetricNameModel;
 
 public class ExtractInsights {
   
   private static final Logger log = LoggerFactory.getLogger(ExtractInsights.class);
   
-  private static final String NRQL = "SELECT latest(timestamp) FROM {eventType} FACET appName, metricFull LIMIT 1000";
+  private static final String NRQL = "SELECT latest(timestamp) FROM {eventType} FACET appId, instanceId, metricFull LIMIT 1000";
   
   private CopierConfig copierConfig;
-  private Insights destInsights;
+  private InsightsAPI destInsights;
 
   public ExtractInsights(CopierConfig copierConfig) {
     this.copierConfig = copierConfig;
-    destInsights = new Insights(copierConfig.getDestKeys());
+    destInsights = new InsightsAPI(copierConfig.getDestKeys());
   }
   
   @Trace
-  public Map<Metric, Date> queryInsights() throws IOException {
+  public Map<String, Date> queryInsights() throws IOException {
     
     // Use the correct eventType
     log.info("About to query Insights");
@@ -36,13 +36,13 @@ public class ExtractInsights {
     JSONArray jFacets = runQuery(nrqlLive);
     
     // Loop over each of the facets received
-    Map<Metric, Date> latestMap = new HashMap<>();
+    Map<String, Date> latestMap = new HashMap<>();
     for (int i=0; i < jFacets.length(); i++) {
       JSONObject jFacet = jFacets.getJSONObject(i);
       processFacet(jFacet, latestMap);
     }
     
-    log.info("Finished querying Insights");
+    log.info("Finished querying Insights, latest maps has " + latestMap.size() + " dates.");
     return latestMap;
   }
 
@@ -57,47 +57,45 @@ public class ExtractInsights {
     return jFacets;
   }
 
-  private void processFacet(JSONObject jFacet, Map<Metric, Date> latestMap) {
+  private void processFacet(JSONObject jFacet, Map<String, Date> latestMap) {
     
     // Get the app and metric names
-    Metric metric = getMetricFromFacet(jFacet);
+    MetricNameModel metricNameModel = getMetricFromFacet(jFacet);
     long latest = getLatestFromFacet(jFacet);
     
     // Store in the latestMap
     Date date = new Date(latest);
-    if (metric != null) {
-      log.debug("* Insights: " + metric + " latest is " + date);
-      latestMap.put(metric, date);
+    if (metricNameModel != null) {
+      log.debug("* Insights: " + metricNameModel + " latest is " + date);
+      String uniqueId = metricNameModel.getUniqueId();
+      latestMap.put(uniqueId, date);
     }
   }
 
-  private Metric getMetricFromFacet(JSONObject jFacet) {
+  private MetricNameModel getMetricFromFacet(JSONObject jFacet) {
 
     // Lookup the app
     JSONArray jName = jFacet.getJSONArray("name");
 
-    // Make sure both facets came back correctly
-    if (!jName.isNull(0) && !jName.isNull(1)) {
+    // 0 is appId
+    // 1 is instanceId
+    // 2 is metricName
+    Integer appId = 0;
+    Integer instanceId = 0;
+    String sMetricName = "";
 
-      // Lookup this app from our config
-      String sAppName = jName.getString(0);
-      Application app = copierConfig.getApplication(sAppName);
-      String sMetricName = jName.getString(1);
-      return getMetricFromApp(app, sMetricName);
+    if (!jName.isNull(0)) {
+      appId = jName.getInt(0);
     }
-
-    return null;
-  }
-
-  private Metric getMetricFromApp(Application app, String sMetricName) {
+    if (!jName.isNull(1)) {
+      instanceId = jName.getInt(1);
+    }
+    if (!jName.isNull(2)) {
+      sMetricName = jName.getString(2);
+    }
     
-    // The app may be null if the names don't match
-    if (app != null) {
-      Metric metric = app.getMetric(sMetricName);
-      log.debug("* getMetric : " + metric + " from " + app);
-      return metric;
-    }
-    return null;
+    MetricNameModel metricNameModel = new MetricNameModel(appId, instanceId, sMetricName);
+    return metricNameModel;
   }
 
   private long getLatestFromFacet(JSONObject jFacet) {

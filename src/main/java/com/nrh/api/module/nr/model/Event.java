@@ -1,4 +1,4 @@
-package com.nrh.api.module.nr.dao;
+package com.nrh.api.module.nr.model;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -16,33 +16,28 @@ public class Event {
     this.eventType = eventType;
   }
 
-  /**
-   * @return the timestamp
-   */
   public Date getTimestamp() {
     return timestamp;
   }
-  /**
-   * @param timestamp the timestamp to set
-   */
+
   public void setTimestamp(Date timestamp) {
     this.timestamp = timestamp;
   }
-  /**
-   * @return the eventType
-   */
+
   public String getEventType() {
     return eventType;
   }
-  /**
-   * @param eventType the eventType to set
-   */
+
   public void setEventType(String eventType) {
     this.eventType = eventType;
   }
 
   public void addStringAttribute(String name, String value) {
     sAttributes.put(name, value);
+  }
+
+  public void addIntAttribute(String name, Integer value) {
+    nAttributes.put(name, value.doubleValue());
   }
 
   public void addNumericAttribute(String name, Double value) {

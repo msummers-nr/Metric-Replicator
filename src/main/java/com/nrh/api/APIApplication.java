@@ -1,7 +1,7 @@
 package com.nrh.api;
 
 
-import com.nrh.api.module.nr.APIKeyset;
+import com.nrh.api.module.nr.config.APIKeyset;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigException;
 import com.typesafe.config.ConfigFactory;

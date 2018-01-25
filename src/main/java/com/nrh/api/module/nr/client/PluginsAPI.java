@@ -1,5 +1,6 @@
-package com.nrh.api.module.nr;
+package com.nrh.api.module.nr.client;
 
+import com.nrh.api.module.nr.config.APIKeyset;
 import java.io.IOException;
 
 import org.json.JSONObject;
@@ -11,16 +12,16 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class Plugins {
+public class PluginsAPI {
 	
-	private static final Logger log = LoggerFactory.getLogger(Plugins.class);
+	private static final Logger log = LoggerFactory.getLogger(PluginsAPI.class);
 	
 	public static final String URL = "https://platform-api.newrelic.com/platform/v1/metrics";
 	
 	private APIKeyset keys;
 	private OkHttpClient client;
 	
-	public Plugins(APIKeyset keys) {
+	public PluginsAPI(APIKeyset keys) {
 		this.keys = keys;
 		client = new OkHttpClient();
   }

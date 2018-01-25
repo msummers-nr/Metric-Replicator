@@ -6,7 +6,7 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.nrh.api.module.nr.Plugins;
+import com.nrh.api.module.nr.client.PluginsAPI;
 
 public class DataConverter {
   
@@ -72,9 +72,9 @@ public class DataConverter {
   private boolean addLocationMetrics(String sLocId, String sLocResult, double dLocDuration, Map<String, Double> mMetrics) {
     
     // Build out the keys
-    String sSuccessPct = Plugins.buildMetricName(sLocId, "Success", "pct");
-    String sFailPct = Plugins.buildMetricName(sLocId, "Failure", "pct");
-    String sDuration = Plugins.buildMetricName(sLocId, "Duration", "ms");
+    String sSuccessPct = PluginsAPI.buildMetricName(sLocId, "Success", "pct");
+    String sFailPct = PluginsAPI.buildMetricName(sLocId, "Failure", "pct");
+    String sDuration = PluginsAPI.buildMetricName(sLocId, "Duration", "ms");
     
     // Store the values in the metric map
     mMetrics.put(sDuration, dLocDuration);
@@ -93,11 +93,11 @@ public class DataConverter {
     double dAvgDuration = dSumDuration / countLocations;
 
     // Build out the keys
-    String sRollupSuccessCnt = Plugins.buildMetricName("Overall", "Success", "count");
-    String sRollupSuccesPct = Plugins.buildMetricName("Overall", "Success", "pct");
-    String sRollupFailCnt = Plugins.buildMetricName("Overall", "Failure", "count");
-    String sRollupFailPct = Plugins.buildMetricName("Overall", "Failure", "pct");
-    String sRollupDuration = Plugins.buildMetricName("Overall", "Duration", "ms");
+    String sRollupSuccessCnt = PluginsAPI.buildMetricName("Overall", "Success", "count");
+    String sRollupSuccesPct = PluginsAPI.buildMetricName("Overall", "Success", "pct");
+    String sRollupFailCnt = PluginsAPI.buildMetricName("Overall", "Failure", "count");
+    String sRollupFailPct = PluginsAPI.buildMetricName("Overall", "Failure", "pct");
+    String sRollupDuration = PluginsAPI.buildMetricName("Overall", "Duration", "ms");
 
     // Store the values in the plugin map
     mPluginMetrics.put(sRollupSuccessCnt, new Double(countSuccess));

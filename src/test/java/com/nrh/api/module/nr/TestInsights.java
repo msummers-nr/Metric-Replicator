@@ -13,8 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 import com.nrh.api.APIApplication;
-import com.nrh.api.module.nr.APIKeyset;
-import com.nrh.api.module.nr.Insights;
+import com.nrh.api.module.nr.config.APIKeyset;
+import com.nrh.api.module.nr.client.InsightsAPI;
 
 @RunWith(SpringRunner.class)
 public class TestInsights {
@@ -23,7 +23,7 @@ public class TestInsights {
 	
 	// API keys we'll use for the tests
 	private APIKeyset keys;
-	private Insights insights;
+	private InsightsAPI insights;
 	
 	public static final String NRQL_QUERY = "SELECT count(*) FROM Transaction";
 	public static final long TIMEOUT = 10000;
@@ -41,7 +41,7 @@ public class TestInsights {
 		log.info("Insights API Test using keyset for account: " + keys.getAccountName());
 		
 		// Initialize the Insights API
-		insights = new Insights(keys);
+		insights = new InsightsAPI(keys);
 	}
 
 	@Test
