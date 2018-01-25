@@ -4,7 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import com.nrh.api.module.nr.config.*;
 import com.nrh.api.module.nr.model.*;
 
 import java.text.DateFormat;
@@ -44,7 +44,7 @@ public class Parser {
     return jsonToAppModel(jApp);
   }
 
-  public static ArrayList<MetricNameModel> strToMetricNames (Integer appId, String sResponse) {
+  public static ArrayList<MetricNameModel> strToMetricNames (MetricConfig cfg, String sResponse) {
     
     // Get the JSON format
     ArrayList <MetricNameModel> metricNameList = new ArrayList<>();
@@ -55,7 +55,9 @@ public class Parser {
     for (int i = 0; i < jMetricList.length(); i++) {
       JSONObject jMetric = jMetricList.getJSONObject(i);
       String sName = jMetric.getString("name");
-      MetricNameModel model = new MetricNameModel(appId, sName);
+      
+      // Create the model (result)
+      MetricNameModel model = new MetricNameModel(cfg, sName);
       metricNameList.add(model);
     }
 
@@ -63,7 +65,7 @@ public class Parser {
     return metricNameList;
   }
 
-  public static ArrayList<MetricDataModel> strToMetricData (Integer appId, String sResponse) {
+  public static ArrayList<MetricDataModel> strToMetricData (MetricConfig cfg, String sResponse) {
 
     // Get the JSON Format
     JSONObject jResponse = new JSONObject(sResponse);
@@ -78,7 +80,7 @@ public class Parser {
 
     // Go through the array of metrics
     JSONArray jMetricArr = jMetricData.getJSONArray("metrics");
-    return parseMetricArr(appId, jMetricArr);
+    return parseMetricArr(cfg, jMetricArr);
   }
 
   private static AppModel jsonToAppModel(JSONObject jApp) {
@@ -104,7 +106,7 @@ public class Parser {
     return app;
   }
 
-  private static ArrayList<MetricDataModel> parseMetricArr(Integer appId, JSONArray jMetricArr) {
+  private static ArrayList<MetricDataModel> parseMetricArr(MetricConfig cfg, JSONArray jMetricArr) {
     ArrayList<MetricDataModel> metricList = new ArrayList<>();
 
     // Loop through the array of metrics
@@ -112,7 +114,7 @@ public class Parser {
       // Create the metric
       JSONObject jMetric = jMetricArr.getJSONObject(i);
       String sName = jMetric.getString("name");
-      MetricDataModel metric = new MetricDataModel(appId, sName);
+      MetricDataModel metric = new MetricDataModel(cfg, sName);
       metricList.add(metric);
 
       // Add timeslices to the metric

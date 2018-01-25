@@ -1,8 +1,7 @@
 package com.nrh.api.module.task.metrics;
 
 import com.nrh.api.APIApplication;
-import com.nrh.api.module.nr.config.APIKeyset;
-import com.nrh.api.module.nr.config.MetricDataConfig;
+import com.nrh.api.module.nr.config.*;
 import com.typesafe.config.Config;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ public class CopierConfig {
   private String eventType;
   private Config conf;
 
-  private ArrayList<MetricDataConfig> cfgList;
+  private ArrayList<MetricConfig> cfgList;
 
   public CopierConfig() {
     this.conf = APIApplication.getConfig();
@@ -59,7 +58,7 @@ public class CopierConfig {
     log.info("Loaded " + metricList.size() + " metric names from config");
 
     // Add all of the metrics to all of the configs
-    for (MetricDataConfig cfg : cfgList) {
+    for (MetricConfig cfg : cfgList) {
       cfg.setMetricNameList(metricList);
     }
   }
@@ -73,7 +72,7 @@ public class CopierConfig {
     for (String appName : sAppList) {
       String sPropAppId = sProp + ".applications." + appName + ".appId";
       Integer appId = conf.getInt(sPropAppId);
-      MetricDataConfig cfg = new MetricDataConfig(appId, appName);
+      MetricConfig cfg = new MetricConfig(appId, appName);
       cfgList.add(cfg);
     }
 
@@ -104,7 +103,7 @@ public class CopierConfig {
   public String getEventType() {
     return eventType;
   }
-  public ArrayList<MetricDataConfig> getCfgList() {
+  public ArrayList<MetricConfig> getCfgList() {
     return cfgList;
   }
 }

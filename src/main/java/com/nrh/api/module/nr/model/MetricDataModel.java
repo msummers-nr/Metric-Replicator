@@ -1,5 +1,6 @@
 package com.nrh.api.module.nr.model;
 
+import com.nrh.api.module.nr.config.MetricConfig;
 import java.util.Date;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -9,28 +10,25 @@ import org.slf4j.LoggerFactory;
 public class MetricDataModel extends BaseModel {
   private static final Logger log = LoggerFactory.getLogger(MetricDataModel.class);
   
-  private Integer appId;
-  private Integer instanceId;
-  private String appName;
+  private MetricConfig metricConfig;
   private String shortName;
   private TreeMap<Date, TimesliceModel> tsMap = new TreeMap<Date, TimesliceModel>();
 
-  public MetricDataModel(Integer appId, String name) {
-    this.appId = appId;
-    this.instanceId = 0;
-    this.name = name;
-  }
-  public MetricDataModel(Integer appId, Integer instanceId, String name) {
-    this.appId = appId;
-    this.instanceId = instanceId;
+  public MetricDataModel(MetricConfig metricConfig, String name) {
+    this.metricConfig = metricConfig;
     this.name = name;
   }
   
   public String getUniqueId() {
-    if (instanceId != null) {
-      return appId + "." + instanceId + "." + name;
-    }
-    return appId + ".0." + name;
+    return metricConfig.getUniqueId() + "." + name;
+  }
+  
+  public MetricConfig getMetricConfig() {
+    return metricConfig;
+  }
+  
+  public void setMetricConfig(MetricConfig metricConfig) {
+    this.metricConfig = metricConfig;
   }
 
   public SortedMap<Date, TimesliceModel> getTimeslicesSince(Date latest) {
@@ -40,22 +38,6 @@ public class MetricDataModel extends BaseModel {
     SortedMap<Date, TimesliceModel> tailMap = tsMap.tailMap(latest, false);
     log.debug("* " + name + " has " + tailMap.size() + " slices since " + latest);
     return tailMap;
-  }
-  
-  public Integer getAppId() {
-    return appId;
-  }
-
-  public Integer getInstanceId() {
-    return instanceId;
-  }
-
-  public String getAppName() {
-    return appName;
-  }
-  
-  public void setAppName(String appName) {
-    this.appName = appName;
   }
 
   public String getShortName() {

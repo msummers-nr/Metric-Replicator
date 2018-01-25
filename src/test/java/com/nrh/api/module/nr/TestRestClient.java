@@ -29,8 +29,8 @@ public class TestRestClient {
 	// These values are used by the ordered test cases so they are static
 	private static int appId;
 	private static String appName;
+	private static MetricConfig metricConfig;
 	private static int metricCount;
-	private static MetricDataConfig metricDataConfig;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -59,7 +59,7 @@ public class TestRestClient {
 		AppModel appModel = appList.get(0);
 		appId = appModel.getId();
 		appName = appModel.getName();
-		metricDataConfig = new MetricDataConfig(appId, appName);
+		metricConfig = new MetricConfig(appId, appName);
 
 		// // Convert the response into JSON and count the number of applications
 		// JSONObject jResponse = new JSONObject(sResponse);
@@ -97,8 +97,8 @@ public class TestRestClient {
 	@Test
 	public void test3MetricNamesSync() throws IOException {
 		// String sResponse = client.metricNamesSync(appId, null);
-		MetricNamesConfig cfg = new MetricNamesConfig(appId);
-		ArrayList<MetricNameModel> metricNameList = client.metricNames(cfg);
+		
+		ArrayList<MetricNameModel> metricNameList = client.metricNames(metricConfig);
 		
 		// // Convert the response into JSON and count the number of applications
 		// JSONObject jResponse = new JSONObject(sResponse);
@@ -122,7 +122,7 @@ public class TestRestClient {
 			// Add metrics to the list unless they start with Instance
 			// String fullName = jMetrics.getJSONObject(i).getString("name");
 			if (!fullName.startsWith("Instance")) {
-				metricDataConfig.addMetricName(fullName);
+				metricConfig.addMetricName(fullName);
 				// Metric metric = new Metric(fullName, null);
 				// metricList.add(metric);
 				metricCount++;
@@ -134,7 +134,7 @@ public class TestRestClient {
 	public void test4MetricDataSync() throws IOException {
 
 		// sResponse = client.metricDataSync(appId, metricList);
-		ArrayList<MetricDataModel> metricDataList = client.metricData(metricDataConfig);
+		ArrayList<MetricDataModel> metricDataList = client.metricData(metricConfig);
 		
 		// Convert the response into JSON and count the number of applications
 		// JSONObject jResponse = new JSONObject(sResponse);

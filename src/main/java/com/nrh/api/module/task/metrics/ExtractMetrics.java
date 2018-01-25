@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.newrelic.api.agent.Trace;
 import com.nrh.api.module.nr.client.rest.ApplicationsAPI;
-import com.nrh.api.module.nr.config.MetricDataConfig;
+import com.nrh.api.module.nr.config.MetricConfig;
 import com.nrh.api.module.nr.model.*;
 
 public class ExtractMetrics {
@@ -29,10 +29,10 @@ public class ExtractMetrics {
     ArrayList<MetricDataModel> resultList = new ArrayList<>();
 
     // Loop through the metric data configs
-    ArrayList<MetricDataConfig> cfgList = copierConfig.getCfgList();
+    ArrayList<MetricConfig> cfgList = copierConfig.getCfgList();
     log.info("About to query metric data from: " + cfgList.size() + " apps.");
 
-    for (MetricDataConfig cfg : cfgList) {
+    for (MetricConfig cfg : cfgList) {
       ArrayList<MetricDataModel> metricData = srcRestClient.metricData(cfg);
       resultList.addAll(metricData);
     }

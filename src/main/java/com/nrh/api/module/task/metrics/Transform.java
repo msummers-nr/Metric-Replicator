@@ -2,6 +2,7 @@ package com.nrh.api.module.task.metrics;
 
 import com.newrelic.api.agent.NewRelic;
 import com.newrelic.api.agent.Trace;
+import com.nrh.api.module.nr.config.MetricConfig;
 import com.nrh.api.module.nr.model.Event;
 import com.nrh.api.module.nr.model.MetricDataModel;
 import com.nrh.api.module.nr.model.TimesliceModel;
@@ -60,11 +61,12 @@ public class Transform {
     e.setTimestamp(date);
     
     // Integer attributes
-    e.addIntAttribute("appId", model.getAppId());
-    e.addIntAttribute("instanceId", model.getInstanceId());
+    MetricConfig cfg = model.getMetricConfig();
+    e.addIntAttribute("appId", cfg.getAppId());
+    e.addIntAttribute("instanceId", cfg.getInstanceId());
 
     // String attributes
-    e.addStringAttribute("appName", model.getAppName());
+    e.addStringAttribute("appName", cfg.getAppName());
     e.addStringAttribute("metricShort", model.getShortName());
     e.addStringAttribute("metricFull", model.getName());
     

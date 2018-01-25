@@ -64,7 +64,7 @@ public class ApplicationsAPI {
 		return Parser.strToAppModel(sResponse);
 	}
 
-	public ArrayList<MetricNameModel> metricNames(MetricNamesConfig cfg) throws IOException {
+	public ArrayList<MetricNameModel> metricNames(MetricConfig cfg) throws IOException {
 		// Create the URL
 		Integer appId = cfg.getAppId();
 		String metricSegment = URL_METRICS_PATH.replace("{application_id}", appId.toString());
@@ -82,10 +82,10 @@ public class ApplicationsAPI {
 		// Parse the Response into an App Models
 		String sResponse = rsp.body().string();
 		log.debug(sResponse);
-		return Parser.strToMetricNames(cfg.getAppId(), sResponse);
+		return Parser.strToMetricNames(cfg, sResponse);
 	}
 
-	public ArrayList<MetricDataModel> metricData(MetricDataConfig cfg) throws IOException {
+	public ArrayList<MetricDataModel> metricData(MetricConfig cfg) throws IOException {
 		// Create the URL
 		Integer appId = cfg.getAppId();
 		String dataSegment = URL_DATA_PATH.replace("{application_id}", appId.toString());
@@ -106,6 +106,6 @@ public class ApplicationsAPI {
 		// Parse the Response into an App Models
 		String sResponse = rsp.body().string();
 		log.debug(sResponse);
-		return Parser.strToMetricData(appId, sResponse);
+		return Parser.strToMetricData(cfg, sResponse);
 	}
 }

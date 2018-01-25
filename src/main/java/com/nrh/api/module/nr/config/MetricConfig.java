@@ -3,10 +3,14 @@ package com.nrh.api.module.nr.config;
 import java.util.ArrayList;
 // import java.util.Date;
 
-public class MetricDataConfig {
+public class MetricConfig {
+  
   private Integer appId;
+  private Integer instanceId;
   private String appName;
-  private ArrayList<String> metricNameList;
+
+  private String filterName;
+  private ArrayList<String> metricNameList = new ArrayList<>();
   // private ArrayList<String> metricValueList;
   // private Date from;
   // private Date to;
@@ -14,13 +18,26 @@ public class MetricDataConfig {
   // private Boolean summarize;
   // private Boolean raw;
 
-  public MetricDataConfig(Integer appId, String appName) {
+  public MetricConfig(Integer appId, String appName) {
     this.appId = appId;
-    metricNameList = new ArrayList<>();
+    this.appName = appName;
+  }
+
+  public MetricConfig(Integer appId, Integer instanceId, String appName) {
+    this.appId = appId;
+    this.instanceId = instanceId;
+    this.appName = appName;
   }
 
   public void addMetricName(String metricName) {
     metricNameList.add(metricName);
+  }
+
+  public String getUniqueId() {
+    if (instanceId != null) {
+      return appId + "." + instanceId;
+    }
+    return appId + ".0.";
   }
 
   public Integer getAppId() {
@@ -38,7 +55,22 @@ public class MetricDataConfig {
   public void setAppName(String appName) {
     this.appName = appName;
   }
+  
+  public Integer getInstanceId() {
+    return instanceId;
+  }
+  
+  public void setInstanceId(Integer instanceId) {
+    this.instanceId = instanceId;
+  }
 
+  public void setFilterName(String filterName) {
+    this.filterName = filterName;
+  }
+  
+  public String getFilterName() {
+    return filterName;
+  }
   public ArrayList<String> getMetricNameList() {
     return metricNameList;
   }

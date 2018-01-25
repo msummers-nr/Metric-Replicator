@@ -1,38 +1,17 @@
 package com.nrh.api.module.nr.model;
 
+import com.nrh.api.module.nr.config.MetricConfig;
+
 public class MetricNameModel extends BaseModel {
-  private Integer appId;
-  private Integer instanceId;
+  private MetricConfig cfg;
   private String shortName;
 
-  public MetricNameModel(Integer appId, String name) {
-    this.appId = appId;
-    this.instanceId = 0;
-    this.name = name;
-  }
-  
-  public MetricNameModel(Integer appId, Integer instanceId, String name) {
-    this.appId = appId;
-    this.instanceId = instanceId;
+  public MetricNameModel(MetricConfig cfg, String name) {
+    this.cfg = cfg;
     this.name = name;
   }
   public String getUniqueId() {
-    if (instanceId != null) {
-      return appId + "." + instanceId + "." + name;
-    }
-    return appId + ".0." + name;
-  }
-  public Integer getAppId() {
-    return appId;
-  }
-  public void setAppId(Integer appId) {
-    this.appId = appId;
-  }
-  public Integer getInstanceId() {
-    return instanceId;
-  }
-  public void setInstanceId(Integer instanceId) {
-    this.instanceId = instanceId;
+    return cfg.getUniqueId() + "." + name;
   }
   public String getShortName() {
     return shortName;
