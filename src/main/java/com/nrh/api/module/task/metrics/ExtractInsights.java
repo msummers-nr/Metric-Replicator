@@ -58,7 +58,7 @@ public class ExtractInsights {
     return jFacets;
   }
 
-  private void processFacet(JSONObject jFacet, Map<String, Date> latestMap) {
+  private void processFacet(JSONObject jFacet, Map<String, Date> latestMap) throws IOException {
     
     // Get the app and metric names
     MetricNameModel metricNameModel = getMetricFromFacet(jFacet);
@@ -73,34 +73,25 @@ public class ExtractInsights {
     }
   }
 
-  private MetricNameModel getMetricFromFacet(JSONObject jFacet) {
+  private MetricNameModel getMetricFromFacet(JSONObject jFacet) throws IOException {
 
-    // Lookup the app
-    JSONArray jName = jFacet.getJSONArray("name");
+    String uniqueId = jFacet.getString("name");
 
-    // 0 is appId
-    // 1 is instanceId
-    // 2 is metricName
-    Integer appId = 0;
-    Integer instanceId = 0;
-    String sMetricName = "";
-
-    if (!jName.isNull(0)) {
-      appId = jName.getInt(0);
-    }
-    if (!jName.isNull(1)) {
-      instanceId = jName.getInt(1);
-    }
-    if (!jName.isNull(2)) {
-      sMetricName = jName.getString(2);
+    // uniqueId format: {appId}.{hostId}.{instanceId}.{metricName}
+    String[] idSegments = uniqueId.split("\\.", 4);
+    if (idSegments.length != 4) {
+      throw new IOException("uniqueId does not have 4 segments");
     }
     
-    // Create the metricConfig object for this
-    MetricConfig metricConfig = new MetricConfig(appId, null);
-    metricConfig.setInstanceId(instanceId);
+    // Grab the values from each segment to re-create the MetricConfig
+    Integer appId = Integer.parseInt(idSegments[0]);
+    Integer hostId = Integer.parseInt(idSegments[1]);
+    Integer instanceId = Integer.parseInt(idSegments[2]);
+    String metricName = idSegments[3];
+    MetricConfig metricConfig = new MetricConfig(appId, hostId, instanceId);
     
     // Create the model with a link back to this config we just created
-    MetricNameModel metricNameModel = new MetricNameModel(metricConfig, sMetricName);
+    MetricNameModel metricNameModel = new MetricNameModel(metricConfig, metricName);
     return metricNameModel;
   }
 

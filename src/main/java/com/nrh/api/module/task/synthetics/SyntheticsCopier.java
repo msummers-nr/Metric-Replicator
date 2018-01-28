@@ -47,6 +47,8 @@ public class SyntheticsCopier {
   @Trace(dispatcher=true)
   public void start() throws IOException {
     
+    log.info("Synthetics plugin starting");
+    
     // Extract from Insights
     Extract extract = new Extract(insights);
     
@@ -56,6 +58,8 @@ public class SyntheticsCopier {
     // Load the data into Plugin API and Insights Insert API
     plugins.postMessage(transform.toPluginFormat());
     insights.insertSync(transform.toInsightsFormat());
+
+    log.info("Synthetics plugin complete");
   }
 
 }

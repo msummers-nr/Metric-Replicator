@@ -49,6 +49,8 @@ public class MetricsCopier {
   @Trace(dispatcher=true)
   public void copy() throws IOException {
     
+    log.info("Copy starting");
+
     // Extract from both insights and the REST API
     Map<String, Date> latestMap = extractInsights.queryInsights();
     ArrayList<MetricDataModel> metricData = extractMetrics.queryMetricData();
@@ -59,6 +61,6 @@ public class MetricsCopier {
     load.post(eventList);
 
     // Clean up
-    log.info("Complete");
+    log.info("Copy complete");
   }
 }

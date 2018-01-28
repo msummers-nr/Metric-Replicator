@@ -11,15 +11,15 @@ public class AppConfig {
 
   protected Integer appId = 0;
   protected String appName;
+  protected Integer hostId = 0;
+  protected Integer instanceId = 0;
   
   private String configType;
-  private Integer hostId = 0;
-  private Integer instanceId = 0;
   private boolean sortHealthStatus;
   private Map<String, String> filterMap = new HashMap<>();
 
   public String getUniqueId() {
-    String uniqueId = appId + "." + hostId + "." + instanceId + ".";
+    String uniqueId = appId + "." + hostId + "." + instanceId;
     return uniqueId;
   }
 

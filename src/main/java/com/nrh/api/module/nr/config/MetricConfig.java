@@ -16,6 +16,12 @@ public class MetricConfig extends AppConfig {
     this.appName = appName;
   }
 
+  public MetricConfig(Integer appId, Integer hostId, Integer instanceId) {
+    this.appId = appId;
+    this.hostId = hostId;
+    this.instanceId = instanceId;
+  }
+
   public void addMetricName(String metricName) {
     metricNameList.add(metricName);
   }
