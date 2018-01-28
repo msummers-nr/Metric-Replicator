@@ -33,15 +33,21 @@ public class Event {
   }
 
   public void addStringAttribute(String name, String value) {
-    sAttributes.put(name, value);
+    if (value != null) {
+      sAttributes.put(name, value);
+    }
   }
 
   public void addIntAttribute(String name, Integer value) {
-    nAttributes.put(name, value.doubleValue());
+    if (value != null) {
+      nAttributes.put(name, value.doubleValue());
+    }
   }
 
   public void addNumericAttribute(String name, Double value) {
-    nAttributes.put(name, value);
+    if (value != null) {
+      nAttributes.put(name, value);
+    }
   }
 
   public JSONObject toJSON() {
