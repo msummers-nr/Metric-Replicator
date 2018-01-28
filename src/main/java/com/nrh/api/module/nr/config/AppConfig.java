@@ -3,7 +3,7 @@ package com.nrh.api.module.nr.config;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ApplicationConfig {
+public class AppConfig {
 
   public static final String TYPE_APP_ONLY = "application";
   public static final String TYPE_APP_HOST = "application_host";
@@ -17,18 +17,9 @@ public class ApplicationConfig {
   private boolean sortHealthStatus;
   private Map<String, String> filterMap = new HashMap<>();
 
-  public ApplicationConfig(String configType) {
-    this.configType = configType;
-  }
-
   public String getUniqueId() {
-    if (instanceId != null) {
-      return appId + "." + instanceId;
-    }
-    if (hostId != null) {
-      return appId + "." + hostId;
-    }
-    return appId + ".0.";
+    String uniqueId = appId + "." + hostId + "." + instanceId + ".";
+    return uniqueId;
   }
 
   public String getConfigType() {

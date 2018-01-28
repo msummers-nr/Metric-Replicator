@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.newrelic.api.agent.Trace;
-import com.nrh.api.module.nr.client.rest.ApplicationsAPI;
+import com.nrh.api.module.nr.client.rest.AppAPI;
 import com.nrh.api.module.nr.config.MetricConfig;
 import com.nrh.api.module.nr.model.*;
 
@@ -13,14 +13,14 @@ public class ExtractMetrics {
   
   private static final Logger log = LoggerFactory.getLogger(ExtractMetrics.class);
   
-  private ApplicationsAPI srcRestClient;
+  private AppAPI srcRestClient;
   private CopierConfig copierConfig;
 
   public ExtractMetrics(CopierConfig copierConfig) {
     
     // Initialize the API clients
     this.copierConfig = copierConfig;
-    srcRestClient = new ApplicationsAPI(copierConfig.getSourceKeys());
+    srcRestClient = new AppAPI(copierConfig.getSourceKeys());
   }
   
   @Trace

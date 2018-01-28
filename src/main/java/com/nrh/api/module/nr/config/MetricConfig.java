@@ -8,28 +8,14 @@ public class MetricConfig {
   public static final String TYPE_METRIC_DATA = "metric_data";
 
   private String metricType;
-  private ApplicationConfig appConfig;
-  // private Integer appId;
-  // private Integer hostId;
-  // private Integer instanceId;
-  // private String appName;
+  private AppConfig appConfig;
 
   private String filterName;
   private ArrayList<String> metricNameList = new ArrayList<>();
-  // private ArrayList<String> metricValueList;
-  // private Date from;
-  // private Date to;
-  // private Integer period;
-  // private Boolean summarize;
-  // private Boolean raw;
-
-  public MetricConfig(ApplicationConfig appConfig) {
-    this.appConfig = appConfig;
-  }
 
   public MetricConfig(Integer appId, String appName) {
     // Create the appConfig if it doesn't exist
-    ApplicationConfig appConfig = new ApplicationConfig(ApplicationConfig.TYPE_APP_ONLY);
+    AppConfig appConfig = new AppConfig();
     appConfig.setAppId(appId);
     appConfig.setAppName(appName);
     this.appConfig = appConfig;

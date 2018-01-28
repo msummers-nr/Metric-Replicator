@@ -21,7 +21,7 @@ public class ParserToApp {
   private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX";
   private static final DateFormat df = new SimpleDateFormat(DATE_FORMAT);
   
-  public static ArrayList<AppModel> strToAppList (String sResponse, ApplicationConfig appConfig) throws IOException {
+  public static ArrayList<AppModel> strToAppList (String sResponse, AppConfig appConfig) throws IOException {
     
     // The configType is "application" or "application_host", etc. must add "s" for list call
     String sJsonRoot = appConfig.getConfigType() + "s";
@@ -40,7 +40,7 @@ public class ParserToApp {
     return appList;
   }
 
-  public static AppModel strToAppModel (String sResponse, ApplicationConfig appConfig) throws IOException {
+  public static AppModel strToAppModel (String sResponse, AppConfig appConfig) throws IOException {
     
     // The configType is "application" or "application_host" or "application_instance"
     String sJsonRoot = appConfig.getConfigType();
@@ -52,19 +52,18 @@ public class ParserToApp {
     return jsonToAppModel(jApp, appConfig);
   }
 
-  private static AppModel jsonToAppModel(JSONObject jApp, ApplicationConfig appConfig) throws IOException {
+  private static AppModel jsonToAppModel(JSONObject jApp, AppConfig appConfig) throws IOException {
     
     String configType = appConfig.getConfigType();
-    if (configType.equals(ApplicationConfig.TYPE_APP_ONLY)) {
+    if (configType.equals(AppConfig.TYPE_APP_ONLY)) {
       return parseApplicationOnly(jApp);
     }
-   
-    if (configType.equals(ApplicationConfig.TYPE_APP_HOST)) {
+    if (configType.equals(AppConfig.TYPE_APP_HOST)) {
       return parseApplicationHost(jApp);
     }
-    // if (configType.equals(ApplicationConfig.TYPE_APP_INSTANCE)) {
-    //   return jsonToAppModel(jApp);
-    // }
+    if (configType.equals(AppConfig.TYPE_APP_INSTANCE)) {
+      return parseApplicationInstance(jApp);
+    }
 
     // If we reach here then it's an error
     throw new IOException("Unsupported configType: " + configType);
@@ -83,6 +82,7 @@ public class ParserToApp {
   private static AppModel parseApplicationOnly(JSONObject jApp) {
     AppModel appModel = new AppModel();
     parseApplicationBase(jApp, appModel);
+    appModel.setAppId(jApp.getInt("id"));
     appModel.setName(jApp.getString("name"));
     appModel.setReporting(jApp.getBoolean("reporting"));
     return appModel;
@@ -91,8 +91,24 @@ public class ParserToApp {
   private static AppHostModel parseApplicationHost(JSONObject jApp) {
     AppHostModel appHostModel = new AppHostModel();
     parseApplicationBase(jApp, appHostModel);
+    appHostModel.setHostId(jApp.getInt("id"));
     appHostModel.setName(jApp.getString("application_name"));
+    appHostModel.setHost(jApp.getString("host"));
     return appHostModel;
+  }
+
+  private static AppHostModel parseApplicationInstance(JSONObject jApp) {
+    AppInstanceModel appInstanceModel = new AppInstanceModel();
+    parseApplicationBase(jApp, appInstanceModel);
+    appInstanceModel.setAppId(jApp.getInt("id"));
+    appInstanceModel.setName(jApp.getString("application_name"));
+    appInstanceModel.setHost(jApp.getString("host"));
+    
+    // Port is supplied by certain Agents like Java
+    if (jApp.has("port")) {
+      appInstanceModel.setPort(jApp.getInt("port"));
+    }
+    return appInstanceModel;
   }
 
   private static Date getLastReported(JSONObject jApp) {

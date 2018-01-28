@@ -24,12 +24,13 @@ public class TestRestAPI {
 	private static final Logger log = LoggerFactory.getLogger(TestRestAPI.class);
 	
 	private APIKeyset keys;
-	private ApplicationsAPI appClient; 
-	private ApplicationHostsAPI appHostClient;
+	private AppAPI appClient; 
+	private AppHostAPI appHostClient;
+	private AppInstanceAPI appInstanceClient;
 	
 	// These values are used by the ordered test cases so they are static
 	private static int appId;
-	private static ApplicationConfig appConfig;
+	private static AppConfig appConfig;
 	private static MetricConfig metricConfig;
 	private static int metricCount;
 	
@@ -46,9 +47,12 @@ public class TestRestAPI {
 		log.info("Application API Test using keyset for account: " + keys.getAccountName());
 		
 		// Initialize the Applications API
-		appClient = new ApplicationsAPI(keys);
-		appHostClient = new ApplicationHostsAPI(keys);
-		appConfig = new ApplicationConfig(ApplicationConfig.TYPE_APP_ONLY);
+		appClient = new AppAPI(keys);
+		appHostClient = new AppHostAPI(keys);
+		appInstanceClient = new AppInstanceAPI(keys);
+
+		// Initialize an empty config (the tests will fill it in)
+		appConfig = new AppConfig();
 	}
 
 	@Test
@@ -121,6 +125,17 @@ public class TestRestAPI {
 		log.info("appHost1List(" + appConfig.getAppId() + ")");
 		ArrayList<AppModel> hostList = appHostClient.list(appConfig);
 		log.info("Number of hosts: " + hostList.size());
+		
+		assertNotEquals(0, hostList.size());
+	}
+
+
+	@Test
+	public void appInstance1List() throws IOException {
+		appConfig.setAppId(appId);
+		log.info("appInstance1List(" + appConfig.getAppId() + ")");
+		ArrayList<AppModel> hostList = appInstanceClient.list(appConfig);
+		log.info("Number of instances: " + hostList.size());
 		
 		assertNotEquals(0, hostList.size());
 	}

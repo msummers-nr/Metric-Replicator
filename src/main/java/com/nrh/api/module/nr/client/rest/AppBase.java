@@ -13,21 +13,21 @@ import org.slf4j.LoggerFactory;
 import okhttp3.HttpUrl.Builder;
 import okhttp3.*;
 
-public abstract class ApplicationBase {
+public abstract class AppBase {
 
-	private static final Logger log = LoggerFactory.getLogger(ApplicationBase.class);
+	private static final Logger log = LoggerFactory.getLogger(AppBase.class);
 			
 	public static final String URL_HOST = "api.newrelic.com";
 	
 	private APIKeyset keys;
 	private OkHttpClient client;
 
-	public ApplicationBase(APIKeyset keys) {
+	public AppBase(APIKeyset keys) {
 		this.keys = keys;
 		client = new OkHttpClient();
 	}
 	
-	public ArrayList<AppModel> list(ApplicationConfig appConfig, String segment) throws IOException {
+	public ArrayList<AppModel> list(AppConfig appConfig, String segment) throws IOException {
 		
 		// Create the URL with the filters
 		Builder urlBuilder = Util.startBuilder(URL_HOST, segment);
@@ -40,7 +40,7 @@ public abstract class ApplicationBase {
 		return ParserToApp.strToAppList(sResponse, appConfig);
 	}
 
-	public AppModel show(ApplicationConfig appConfig, String segment) throws IOException {
+	public AppModel show(AppConfig appConfig, String segment) throws IOException {
 		// Create the URL (no parameters)
 		Builder urlBuilder = Util.startBuilder(URL_HOST, segment);
 		

@@ -3,10 +3,19 @@ package com.nrh.api.module.nr.model;
 import java.util.Date;
 
 public class AppModel extends BaseModel {
+  private Integer appId;
   private String language;
   private String healthStatus;
   private Boolean reporting;
   private Date lastReportedAt;
+
+  public Integer getAppId() {
+    return appId;
+  }
+  
+  public void setAppId(Integer appId) {
+    this.appId = appId;
+  }
 
   public String getLanguage() {
     return language;
