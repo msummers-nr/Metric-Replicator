@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.nrh.api.module.nr.config.*;
 import com.nrh.api.module.nr.model.*;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,42 +13,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
-public class Parser {
+public class ParserToMetric {
   
-  private static final Logger log = LoggerFactory.getLogger(Parser.class);
+  private static final Logger log = LoggerFactory.getLogger(ParserToMetric.class);
   
   // Example date: 2018-01-02T19:30:00+00:00
   private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX";
   private static final DateFormat df = new SimpleDateFormat(DATE_FORMAT);
   
-  public static ArrayList<AppModel> strToAppList (String sResponse) {
+  public static ArrayList<MetricNameModel> strToMetricNames (String sResponse, MetricConfig metricConfig) {
     
-    // Get the JSON format
-    ArrayList<AppModel> appList = new ArrayList<>();
-    JSONObject jResponse = new JSONObject(sResponse);
-    JSONArray jAppList = jResponse.getJSONArray("applications");
-    
-    // Loop over the applications
-    for (int i = 0; i < jAppList.length(); i++) {
-      JSONObject jApp = jAppList.getJSONObject(i);
-      AppModel app = jsonToAppModel(jApp);
-      appList.add(app);
-    }
-    return appList;
-  }
+    // The metricType is "metrics" or "metric_data"
+    String sJsonRoot = metricConfig.getMetricType();
 
-  public static AppModel strToAppModel (String sResponse) {
-    JSONObject jResponse = new JSONObject(sResponse);
-    JSONObject jApp = jResponse.getJSONObject("application");
-    return jsonToAppModel(jApp);
-  }
-
-  public static ArrayList<MetricNameModel> strToMetricNames (MetricConfig cfg, String sResponse) {
-    
     // Get the JSON format
     ArrayList <MetricNameModel> metricNameList = new ArrayList<>();
     JSONObject jResponse = new JSONObject(sResponse);
-    JSONArray jMetricList = jResponse.getJSONArray("metrics");
+    JSONArray jMetricList = jResponse.getJSONArray(sJsonRoot);
 
     // Loop over the metrics
     for (int i = 0; i < jMetricList.length(); i++) {
@@ -57,7 +37,7 @@ public class Parser {
       String sName = jMetric.getString("name");
       
       // Create the model (result)
-      MetricNameModel model = new MetricNameModel(cfg, sName);
+      MetricNameModel model = new MetricNameModel(metricConfig, sName);
       metricNameList.add(model);
     }
 
@@ -65,11 +45,14 @@ public class Parser {
     return metricNameList;
   }
 
-  public static ArrayList<MetricDataModel> strToMetricData (MetricConfig cfg, String sResponse) {
-
+  public static ArrayList<MetricDataModel> strToMetricData (String sResponse, MetricConfig metricConfig) {
+    
+    // The metricType is "metrics" or "metric_data"
+    String sJsonRoot = metricConfig.getMetricType();
+    
     // Get the JSON Format
     JSONObject jResponse = new JSONObject(sResponse);
-    JSONObject jMetricData = jResponse.getJSONObject("metric_data");
+    JSONObject jMetricData = jResponse.getJSONObject(sJsonRoot);
 
     // Log errors for any not found metrics
     JSONArray jMetricsNotFound = jMetricData.getJSONArray("metrics_not_found");
@@ -80,30 +63,7 @@ public class Parser {
 
     // Go through the array of metrics
     JSONArray jMetricArr = jMetricData.getJSONArray("metrics");
-    return parseMetricArr(cfg, jMetricArr);
-  }
-
-  private static AppModel jsonToAppModel(JSONObject jApp) {
-    
-    // Pull the string and int values straight from JSON
-    AppModel app = new AppModel();
-    app.setId(jApp.getInt("id"));
-    app.setName(jApp.getString("name"));
-    app.setLanguage(jApp.getString("language"));
-    app.setHealthStatus(jApp.getString("health_status"));
-    app.setReporting(jApp.getBoolean("reporting"));
-    
-    // Parse out the date
-    try {
-      if (jApp.has("last_reported_at")) {
-        String sLastReportedAt = jApp.getString("last_reported_at");
-        Date dLastReportedAt = df.parse(sLastReportedAt);
-        app.setLastReportedAt(dLastReportedAt);
-      }
-    } catch (ParseException pe) {
-      log.error(pe.getMessage(), pe);
-    }
-    return app;
+    return parseMetricArr(metricConfig, jMetricArr);
   }
 
   private static ArrayList<MetricDataModel> parseMetricArr(MetricConfig cfg, JSONArray jMetricArr) {

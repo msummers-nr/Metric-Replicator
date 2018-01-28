@@ -95,8 +95,12 @@ public class ExtractInsights {
       sMetricName = jName.getString(2);
     }
     
-    MetricConfig cfg = new MetricConfig(appId, instanceId, sMetricName);
-    MetricNameModel metricNameModel = new MetricNameModel(cfg, sMetricName);
+    // Create the metricConfig object for this
+    MetricConfig metricConfig = new MetricConfig(appId, null);
+    metricConfig.setInstanceId(instanceId);
+    
+    // Create the model with a link back to this config we just created
+    MetricNameModel metricNameModel = new MetricNameModel(metricConfig, sMetricName);
     return metricNameModel;
   }
 

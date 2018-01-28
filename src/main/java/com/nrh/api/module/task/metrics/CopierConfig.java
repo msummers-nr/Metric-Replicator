@@ -72,8 +72,8 @@ public class CopierConfig {
     for (String appName : sAppList) {
       String sPropAppId = sProp + ".applications." + appName + ".appId";
       Integer appId = conf.getInt(sPropAppId);
-      MetricConfig cfg = new MetricConfig(appId, appName);
-      cfgList.add(cfg);
+      MetricConfig metricConfig = new MetricConfig(appId, appName);
+      cfgList.add(metricConfig);
     }
 
     log.info("Loaded " + cfgList.size() + " apps from config");

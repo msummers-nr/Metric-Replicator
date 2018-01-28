@@ -61,12 +61,13 @@ public class Transform {
     e.setTimestamp(date);
     
     // Integer attributes
-    MetricConfig cfg = model.getMetricConfig();
-    e.addIntAttribute("appId", cfg.getAppId());
-    e.addIntAttribute("instanceId", cfg.getInstanceId());
+    MetricConfig metricConfig = model.getMetricConfig();
+    e.addIntAttribute("appId", metricConfig.getAppId());
+    e.addIntAttribute("hostId", metricConfig.getHostId());
+    e.addIntAttribute("instanceId", metricConfig.getInstanceId());
 
     // String attributes
-    e.addStringAttribute("appName", cfg.getAppName());
+    e.addStringAttribute("appName", metricConfig.getAppName());
     e.addStringAttribute("metricShort", model.getShortName());
     e.addStringAttribute("metricFull", model.getName());
     

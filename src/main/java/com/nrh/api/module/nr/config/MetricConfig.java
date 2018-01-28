@@ -4,10 +4,15 @@ import java.util.ArrayList;
 // import java.util.Date;
 
 public class MetricConfig {
-  
-  private Integer appId;
-  private Integer instanceId;
-  private String appName;
+  public static final String TYPE_METRIC_NAME = "metrics";
+  public static final String TYPE_METRIC_DATA = "metric_data";
+
+  private String metricType;
+  private ApplicationConfig appConfig;
+  // private Integer appId;
+  // private Integer hostId;
+  // private Integer instanceId;
+  // private String appName;
 
   private String filterName;
   private ArrayList<String> metricNameList = new ArrayList<>();
@@ -18,15 +23,16 @@ public class MetricConfig {
   // private Boolean summarize;
   // private Boolean raw;
 
-  public MetricConfig(Integer appId, String appName) {
-    this.appId = appId;
-    this.appName = appName;
+  public MetricConfig(ApplicationConfig appConfig) {
+    this.appConfig = appConfig;
   }
 
-  public MetricConfig(Integer appId, Integer instanceId, String appName) {
-    this.appId = appId;
-    this.instanceId = instanceId;
-    this.appName = appName;
+  public MetricConfig(Integer appId, String appName) {
+    // Create the appConfig if it doesn't exist
+    ApplicationConfig appConfig = new ApplicationConfig(ApplicationConfig.TYPE_APP_ONLY);
+    appConfig.setAppId(appId);
+    appConfig.setAppName(appName);
+    this.appConfig = appConfig;
   }
 
   public void addMetricName(String metricName) {
@@ -34,35 +40,48 @@ public class MetricConfig {
   }
 
   public String getUniqueId() {
-    if (instanceId != null) {
-      return appId + "." + instanceId;
-    }
-    return appId + ".0.";
+    return appConfig.getUniqueId();
+  }
+
+  public String getMetricType() {
+    return metricType;
+  }
+  
+  public void setMetricType(String metricType) {
+    this.metricType = metricType;
   }
 
   public Integer getAppId() {
-    return appId;
+    return appConfig.getAppId();
   }
 
-  public void setAppId(Integer appId) {
-    this.appId = appId;
-  }
+  // public void setAppId(Integer appId) {
+  //   this.appId = appId;
+  // }
 
   public String getAppName() {
-    return appName;
+    return appConfig.getAppName();
   }
 
-  public void setAppName(String appName) {
-    this.appName = appName;
-  }
+  // public void setAppName(String appName) {
+  //   this.appName = appName;
+  // }
   
   public Integer getInstanceId() {
-    return instanceId;
+    return appConfig.getAppId();
   }
   
   public void setInstanceId(Integer instanceId) {
-    this.instanceId = instanceId;
+    this.appConfig.setInstanceId(instanceId);;
   }
+  
+  public Integer getHostId() {
+    return appConfig.getHostId();
+  }
+  
+  // public void setHostId(Integer hostId) {
+  //   this.hostId = hostId;
+  // }
 
   public void setFilterName(String filterName) {
     this.filterName = filterName;
