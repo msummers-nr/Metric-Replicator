@@ -3,7 +3,7 @@ package com.nrh.api.module.nr.model;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TimesliceModel extends BaseModel {
+public class TimesliceModel {
   
   private Map<String, Double> valueMap = new HashMap<String, Double>();
 

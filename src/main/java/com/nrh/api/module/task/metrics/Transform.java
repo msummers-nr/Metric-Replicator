@@ -56,20 +56,21 @@ public class Transform {
     return eventList;
   }
 
-  private Event processTimeslice(Date date, MetricDataModel model, TimesliceModel ts) {
+  private Event processTimeslice(Date date, MetricDataModel metricDataModel, TimesliceModel ts) {
     Event e = new Event(config.getEventType());
     e.setTimestamp(date);
     
     // Integer attributes
-    MetricConfig metricConfig = model.getMetricConfig();
+    MetricConfig metricConfig = metricDataModel.getMetricConfig();
     e.addIntAttribute("appId", metricConfig.getAppId());
     e.addIntAttribute("hostId", metricConfig.getHostId());
     e.addIntAttribute("instanceId", metricConfig.getInstanceId());
 
     // String attributes
     e.addStringAttribute("appName", metricConfig.getAppName());
-    e.addStringAttribute("metricShort", model.getShortName());
-    e.addStringAttribute("metricFull", model.getName());
+    e.addStringAttribute("metricShort", metricDataModel.getShortName());
+    e.addStringAttribute("metricFull", metricDataModel.getFullName());
+    e.addStringAttribute("uniqueId", metricDataModel.getUniqueId());
     
     // Double precision attributes
     Map<String, Double> valueMap = ts.getValueMap();

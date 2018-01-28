@@ -65,8 +65,8 @@ public class TestRestAPI {
 		// Grab the first app that is "reporting"
 		for (AppModel appModel : appList) {
 			if (appModel.getReporting()) {
-				appId = appModel.getId();
-				String appName = appModel.getName();
+				appId = appModel.getAppId();
+				String appName = appModel.getAppName();
 				metricConfig = new MetricConfig(appId, appName);
 				log.info("Setting appId to this reporting app: " + appName + " (" + appId + ")");
 				break;
@@ -79,7 +79,7 @@ public class TestRestAPI {
 		appConfig.setAppId(appId);
 		log.info("appShow(" + appConfig.getAppId() + ")");
 		AppModel appModel = appClient.show(appConfig);
-		assertEquals(appConfig.getAppId(), appModel.getId());
+		assertEquals(appConfig.getAppId(), appModel.getAppId());
 	}
 
 	@Test
@@ -99,7 +99,7 @@ public class TestRestAPI {
 			}
 			
 			MetricNameModel metricNameModel = metricNameList.get(i);
-			String fullName = metricNameModel.getName();
+			String fullName = metricNameModel.getFullName();
 
 			// Add metrics to the list unless they start with Instance
 			// String fullName = jMetrics.getJSONObject(i).getString("name");

@@ -71,7 +71,6 @@ public class ParserToApp {
 
   private static void parseApplicationBase(JSONObject jApp, AppModel appModel) {
     // Convert the JSON values to the AppModel
-    appModel.setId(jApp.getInt("id"));
     appModel.setLanguage(jApp.getString("language"));
     appModel.setHealthStatus(jApp.getString("health_status"));
     
@@ -83,7 +82,7 @@ public class ParserToApp {
     AppModel appModel = new AppModel();
     parseApplicationBase(jApp, appModel);
     appModel.setAppId(jApp.getInt("id"));
-    appModel.setName(jApp.getString("name"));
+    appModel.setAppName(jApp.getString("name"));
     appModel.setReporting(jApp.getBoolean("reporting"));
     return appModel;
   }
@@ -92,7 +91,7 @@ public class ParserToApp {
     AppHostModel appHostModel = new AppHostModel();
     parseApplicationBase(jApp, appHostModel);
     appHostModel.setHostId(jApp.getInt("id"));
-    appHostModel.setName(jApp.getString("application_name"));
+    appHostModel.setAppName(jApp.getString("application_name"));
     appHostModel.setHost(jApp.getString("host"));
     return appHostModel;
   }
@@ -101,7 +100,7 @@ public class ParserToApp {
     AppInstanceModel appInstanceModel = new AppInstanceModel();
     parseApplicationBase(jApp, appInstanceModel);
     appInstanceModel.setAppId(jApp.getInt("id"));
-    appInstanceModel.setName(jApp.getString("application_name"));
+    appInstanceModel.setAppName(jApp.getString("application_name"));
     appInstanceModel.setHost(jApp.getString("host"));
     
     // Port is supplied by certain Agents like Java

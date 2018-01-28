@@ -9,12 +9,12 @@ public class AppConfig {
   public static final String TYPE_APP_HOST = "application_host";
   public static final String TYPE_APP_INSTANCE = "application_instance";
 
-  protected Integer appId;
+  protected Integer appId = 0;
   protected String appName;
   
   private String configType;
-  private Integer hostId;
-  private Integer instanceId;
+  private Integer hostId = 0;
+  private Integer instanceId = 0;
   private boolean sortHealthStatus;
   private Map<String, String> filterMap = new HashMap<>();
 

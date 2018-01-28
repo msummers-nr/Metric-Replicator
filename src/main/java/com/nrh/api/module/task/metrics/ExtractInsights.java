@@ -18,7 +18,7 @@ public class ExtractInsights {
   
   private static final Logger log = LoggerFactory.getLogger(ExtractInsights.class);
   
-  private static final String NRQL = "SELECT latest(timestamp) FROM {eventType} FACET appId, instanceId, metricFull LIMIT 1000";
+  private static final String NRQL = "SELECT latest(timestamp) FROM {eventType} FACET uniqueId LIMIT 1000";
   
   private CopierConfig copierConfig;
   private InsightsAPI destInsights;
