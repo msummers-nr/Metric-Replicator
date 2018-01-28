@@ -9,9 +9,10 @@ public class AppConfig {
   public static final String TYPE_APP_HOST = "application_host";
   public static final String TYPE_APP_INSTANCE = "application_instance";
 
+  protected Integer appId;
+  protected String appName;
+  
   private String configType;
-  private Integer appId;
-  private String appName;
   private Integer hostId;
   private Integer instanceId;
   private boolean sortHealthStatus;
