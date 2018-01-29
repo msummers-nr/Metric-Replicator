@@ -35,9 +35,6 @@ public class MetricsCopier {
     extractInsights = new ExtractInsights(config);
     extractMetrics = new ExtractMetrics(config);
     
-    // Initialize the Transform
-    // transform = new Transform(config);
-
     // Initialize the Load
     load = new Load(config);
   }

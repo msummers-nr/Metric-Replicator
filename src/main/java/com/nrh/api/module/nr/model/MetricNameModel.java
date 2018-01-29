@@ -16,8 +16,9 @@ public class MetricNameModel {
   public MetricNameModel(MetricConfig metricConfig, String fullName) {
     // this.metricConfig = metricConfig;
     this.appId = metricConfig.getAppId();
-    // this.hostId = metricConfig.getHostId();
-    // this.instanceId = metricConfig.getInstanceId();
+    this.appName = metricConfig.getAppName();
+    this.hostId = metricConfig.getHostId();
+    this.instanceId = metricConfig.getInstanceId();
     this.fullName = fullName;
   }
 
