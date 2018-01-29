@@ -85,7 +85,7 @@ public class ParseAppShow {
   public static AppInstanceModel parseAppInstance(JSONObject jApp) {
     AppInstanceModel appInstanceModel = new AppInstanceModel();
     parseAppBase(jApp, appInstanceModel);
-    appInstanceModel.setAppId(jApp.getInt("id"));
+    appInstanceModel.setInstanceId(jApp.getInt("id"));
     appInstanceModel.setAppName(jApp.getString("application_name"));
     appInstanceModel.setHost(jApp.getString("host"));
     

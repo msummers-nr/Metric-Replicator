@@ -37,7 +37,7 @@ public class AppHostAPI extends AppBase {
 		return ParseAppList.strToAppHostList(sResponse, appConfig);
 	}
 
-	public AppHostModel showOne(AppConfig appConfig) throws IOException {
+	public AppHostModel show(AppConfig appConfig) throws IOException {
 		// Create the URL segment
 		String sAppId = appConfig.getAppId().toString();
 		String sHostId = appConfig.getHostId().toString();

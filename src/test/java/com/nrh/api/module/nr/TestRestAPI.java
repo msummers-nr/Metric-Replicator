@@ -31,6 +31,8 @@ public class TestRestAPI {
 	// These values are used by the ordered test cases so they are static
 	private static int appId;
 	private static int hostId;
+	private static int instanceId;
+
 	private static AppConfig appConfig;
 	private static MetricConfig metricConfig;
 	private static int metricCount;
@@ -135,12 +137,12 @@ public class TestRestAPI {
 	}
 
 	@Test
-	public void appHost2Show() throws IOException {
+	public void appHost2ShowOne() throws IOException {
 		appConfig.setAppId(appId);
 		appConfig.setHostId(hostId);
 
 		log.info("appHost2Show(" + appId + ", " + hostId + ")");
-		AppHostModel appModel = appHostClient.showOne(appConfig);
+		AppHostModel appModel = appHostClient.show(appConfig);
 		assertEquals(appConfig.getHostId(), appModel.getHostId());
 	}
 
@@ -148,9 +150,22 @@ public class TestRestAPI {
 	public void appInstance1List() throws IOException {
 		appConfig.setAppId(appId);
 		log.info("appInstance1List(" + appConfig.getAppId() + ")");
-		ArrayList<AppInstanceModel> hostList = appInstanceClient.list(appConfig);
-		log.info("Number of instances: " + hostList.size());
+		ArrayList<AppInstanceModel> instanceList = appInstanceClient.list(appConfig);
+		log.info("Number of instances: " + instanceList.size());
 		
-		assertNotEquals(0, hostList.size());
+		// Get the instanceId from the first host
+		AppInstanceModel appHostModel = instanceList.get(0);
+		instanceId = appHostModel.getInstanceId();
+
+		assertNotEquals(0, instanceList.size());
 	}
+
+	@Test
+	public void appInstance2ShowOne() throws IOException {
+		appConfig.setAppId(appId);
+		appConfig.setInstanceId(instanceId);
+
+		log.info("appInstance2Show(" + appId + ", " + hostId + ")");
+		AppInstanceModel appModel = appInstanceClient.show(appConfig);
+		assertEquals(appConfig.getInstanceId(), appModel.getInstanceId());	}
 }

@@ -37,7 +37,7 @@ public class AppInstanceAPI extends AppBase {
 		return ParseAppList.strToAppInstanceList(sResponse, appConfig);
 	}
 
-	public AppInstanceModel showOne(AppConfig appConfig) throws IOException {
+	public AppInstanceModel show(AppConfig appConfig) throws IOException {
 		// Create the URL segment
 		String sAppId = appConfig.getAppId().toString();
 		String sInstanceId = appConfig.getInstanceId().toString();
