@@ -1,5 +1,6 @@
 package com.nrh.api.module.nr.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class AppModel {
@@ -9,6 +10,8 @@ public class AppModel {
   private String healthStatus;
   private Boolean reporting;
   private Date lastReportedAt;
+  private ArrayList<Integer> hostIdList = new ArrayList<>();
+  private ArrayList<Integer> instanceIdList = new ArrayList<>();
 
   public Integer getAppId() {
     return appId;
@@ -57,4 +60,21 @@ public class AppModel {
   public void setLastReportedAt(Date lastReportedAt) {
     this.lastReportedAt = lastReportedAt;
   }
+  
+  public ArrayList<Integer> getHostIdList() {
+    return hostIdList;
+  }
+ 
+  public void addHostId(Integer hostId) {
+    hostIdList.add(hostId);
+  }
+  
+  public ArrayList<Integer> getInstanceIdList() {
+    return instanceIdList;
+  }
+
+  public void addInstanceId(Integer instanceId) {
+    instanceIdList.add(instanceId);
+  }
+  
 }

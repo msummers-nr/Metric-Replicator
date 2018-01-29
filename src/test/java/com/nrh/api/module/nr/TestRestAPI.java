@@ -147,6 +147,25 @@ public class TestRestAPI {
 	}
 
 	@Test
+	public void appHost4MetricData() throws IOException {
+		// Start with the list call to get a list of hosts
+		appConfig.setAppId(appId);
+		log.info("First call appHostClient.list(" + appId + ")");
+		ArrayList<AppHostModel> hostList = appHostClient.list(appConfig);
+
+		// Loop over all the hosts
+		for(AppHostModel hostModel : hostList) {
+			Integer hostId = hostModel.getHostId();
+			metricConfig.setHostId(hostId);
+			log.info("Then call appHostClient.metricData(" + appId + ", " + hostId + ")");
+			ArrayList<MetricDataModel> dataModel = appHostClient.metricData(metricConfig);
+			
+			// Check that we got all the metrics
+			assertEquals(metricCount, dataModel.size());
+		}
+	}
+
+	@Test
 	public void appInstance1List() throws IOException {
 		appConfig.setAppId(appId);
 		log.info("appInstance1List(" + appConfig.getAppId() + ")");
@@ -167,5 +186,25 @@ public class TestRestAPI {
 
 		log.info("appInstance2Show(" + appId + ", " + hostId + ")");
 		AppInstanceModel appModel = appInstanceClient.show(appConfig);
-		assertEquals(appConfig.getInstanceId(), appModel.getInstanceId());	}
+		assertEquals(appConfig.getInstanceId(), appModel.getInstanceId());
+	}
+
+	@Test
+	public void appInstance4MetricData() throws IOException {
+		// Start with the list call to get a list of instances
+		appConfig.setAppId(appId);
+		log.info("First call appInstanceClient.list(" + appId + ")");
+		ArrayList<AppInstanceModel> instanceList = appInstanceClient.list(appConfig);
+
+		// Loop over all the instances
+		for(AppInstanceModel instanceModel : instanceList) {
+			Integer instanceId = instanceModel.getInstanceId();
+			metricConfig.setInstanceId(instanceId);
+			log.info("Then call appInstanceClient.metricData(" + appId + ", " + instanceId + ")");
+			ArrayList<MetricDataModel> dataModel = appInstanceClient.metricData(metricConfig);
+			
+			// Check that we got all the metrics
+			assertEquals(metricCount, dataModel.size());
+		}
+	}
 }
