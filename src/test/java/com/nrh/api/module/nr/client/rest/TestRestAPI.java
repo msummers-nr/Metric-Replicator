@@ -1,4 +1,4 @@
-package com.nrh.api.module.nr;
+package com.nrh.api.module.nr.client.rest;
 
 import static org.junit.Assert.*;
 
@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.nrh.api.APIApplication;
 import com.nrh.api.module.nr.config.*;
 import com.nrh.api.module.nr.model.*;
-import com.nrh.api.module.nr.client.rest.*;
 
 @RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

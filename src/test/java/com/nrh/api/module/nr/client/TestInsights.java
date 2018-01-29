@@ -1,4 +1,4 @@
-package com.nrh.api.module.nr;
+package com.nrh.api.module.nr.client;
 
 import static org.junit.Assert.*;
 
@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 import com.nrh.api.APIApplication;
 import com.nrh.api.module.nr.config.APIKeyset;
-import com.nrh.api.module.nr.client.InsightsAPI;
 
 @RunWith(SpringRunner.class)
 public class TestInsights {
