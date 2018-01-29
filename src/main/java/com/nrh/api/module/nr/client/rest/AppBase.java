@@ -27,7 +27,7 @@ public abstract class AppBase {
 		client = new OkHttpClient();
 	}
 	
-	public ArrayList<AppModel> list(AppConfig appConfig, String segment) throws IOException {
+	public String list(AppConfig appConfig, String segment) throws IOException {
 		
 		// Create the URL with the filters
 		Builder urlBuilder = Util.startBuilder(URL_HOST, segment);
@@ -35,20 +35,16 @@ public abstract class AppBase {
 
 		// Call the API for this URL
 		String sResponse = callAPI(urlBuilder, keys.getRestKey());
-
-		// Parse the response correctly
-		return ParserToApp.strToAppList(sResponse, appConfig);
+		return sResponse;
 	}
 
-	public AppModel show(AppConfig appConfig, String segment) throws IOException {
+	public String show(AppConfig appConfig, String segment) throws IOException {
 		// Create the URL (no parameters)
 		Builder urlBuilder = Util.startBuilder(URL_HOST, segment);
 		
 		// Call the API for this URL
 		String sResponse = callAPI(urlBuilder, keys.getRestKey());
-
-		// Parse the response correctly
-		return ParserToApp.strToAppModel(sResponse, appConfig);
+		return sResponse;
 	}
 
 	public ArrayList<MetricNameModel> metricNames(MetricConfig metricConfig, String segment) throws IOException {

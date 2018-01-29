@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import com.newrelic.api.agent.Trace;
 import com.nrh.api.module.nr.client.InsightsAPI;
-import com.nrh.api.module.nr.config.MetricConfig;
 import com.nrh.api.module.nr.model.MetricNameModel;
 
 public class ExtractInsights {
@@ -87,11 +86,12 @@ public class ExtractInsights {
     Integer appId = Integer.parseInt(idSegments[0]);
     Integer hostId = Integer.parseInt(idSegments[1]);
     Integer instanceId = Integer.parseInt(idSegments[2]);
-    String metricName = idSegments[3];
-    MetricConfig metricConfig = new MetricConfig(appId, hostId, instanceId);
+    String fullName = idSegments[3];
+    // MetricConfig metricConfig = new MetricConfig(appId, hostId, instanceId);
     
     // Create the model with a link back to this config we just created
-    MetricNameModel metricNameModel = new MetricNameModel(metricConfig, metricName);
+    // MetricNameModel metricNameModel = new MetricNameModel(metricConfig, metricName);
+    MetricNameModel metricNameModel = new MetricNameModel(appId, hostId, instanceId, fullName);
     return metricNameModel;
   }
 

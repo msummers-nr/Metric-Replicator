@@ -21,29 +21,35 @@ public class AppInstanceAPI extends AppBase {
 
 	public AppInstanceAPI(APIKeyset keys) {
 		super(keys);
-		log.info("Application Hosts API constructed");
+		log.info("Application Instance API constructed");
 	}
 	
-	public ArrayList<AppModel> list(AppConfig appConfig) throws IOException {
+	public ArrayList<AppInstanceModel> list(AppConfig appConfig) throws IOException {
 		// Create the URL segment
 		String sAppId = appConfig.getAppId().toString();
 		String listSegment = URL_LIST_PATH.replace("{application_id}", sAppId);
 
 		// Must specify this is the APP_HOST type
 		appConfig.setConfigType(AppConfig.TYPE_APP_INSTANCE);
-		return list(appConfig, listSegment);
+		String sResponse = list(appConfig, listSegment);
+		
+		// Parse the response correctly
+		return ParseAppList.strToAppInstanceList(sResponse, appConfig);
 	}
 
-	public AppModel show(AppConfig appConfig) throws IOException {
+	public AppInstanceModel showOne(AppConfig appConfig) throws IOException {
 		// Create the URL segment
 		String sAppId = appConfig.getAppId().toString();
-		String sInstanceId = appConfig.getHostId().toString();
+		String sInstanceId = appConfig.getInstanceId().toString();
 		String showSegment = URL_SHOW_PATH.replace("{application_id}", sAppId);
 		showSegment = showSegment.replace("{instance_id}", sInstanceId);
 
 		// Must specify this is the APP_HOST type
 		appConfig.setConfigType(AppConfig.TYPE_APP_INSTANCE);
-		return show(appConfig, showSegment);
+		String sResponse = show(appConfig, showSegment);
+
+		// Parse the response correctly
+		return ParseAppShow.strToAppInstanceModel(sResponse, appConfig);
 	}
 
 	public ArrayList<MetricNameModel> metricNames(MetricConfig metricConfig) throws IOException {

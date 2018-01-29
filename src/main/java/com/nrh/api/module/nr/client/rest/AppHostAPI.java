@@ -24,17 +24,20 @@ public class AppHostAPI extends AppBase {
 		log.info("Application Hosts API constructed");
 	}
 	
-	public ArrayList<AppModel> list(AppConfig appConfig) throws IOException {
+	public ArrayList<AppHostModel> list(AppConfig appConfig) throws IOException {
 		// Create the URL segment
 		String sAppId = appConfig.getAppId().toString();
 		String listSegment = URL_LIST_PATH.replace("{application_id}", sAppId);
 
 		// Must specify this is the APP_HOST type
 		appConfig.setConfigType(AppConfig.TYPE_APP_HOST);
-		return list(appConfig, listSegment);
+		String sResponse = list(appConfig, listSegment);
+		
+		// Parse the response correctly
+		return ParseAppList.strToAppHostList(sResponse, appConfig);
 	}
 
-	public AppModel show(AppConfig appConfig) throws IOException {
+	public AppHostModel showOne(AppConfig appConfig) throws IOException {
 		// Create the URL segment
 		String sAppId = appConfig.getAppId().toString();
 		String sHostId = appConfig.getHostId().toString();
@@ -43,7 +46,10 @@ public class AppHostAPI extends AppBase {
 
 		// Must specify this is the APP_HOST type
 		appConfig.setConfigType(AppConfig.TYPE_APP_HOST);
-		return show(appConfig, showSegment);
+		String sResponse = show(appConfig, showSegment);
+
+		// Parse the response correctly
+		return ParseAppShow.strToAppHostModel(sResponse, appConfig);
 	}
 
 	public ArrayList<MetricNameModel> metricNames(MetricConfig metricConfig) throws IOException {

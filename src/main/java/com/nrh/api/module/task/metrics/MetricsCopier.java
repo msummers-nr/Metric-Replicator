@@ -25,7 +25,7 @@ public class MetricsCopier {
   // private Transform transform;
   private Load load;
 
-  public MetricsCopier() {
+  public MetricsCopier() throws IOException {
     log.info("Initializing Metrics Copier");
 
     // Setup the source and destination keys

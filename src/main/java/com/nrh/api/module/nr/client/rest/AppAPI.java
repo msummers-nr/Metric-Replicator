@@ -27,7 +27,9 @@ public class AppAPI extends AppBase {
 		appConfig.setConfigType(AppConfig.TYPE_APP_ONLY);
 		
 		// Static URL for this list call
-		return list(appConfig, URL_LIST_PATH);
+		String sResponse = list(appConfig, URL_LIST_PATH);
+		return ParseAppList.strToAppList(sResponse, appConfig);
+
 	}
 
 	public AppModel show(AppConfig appConfig) throws IOException {
@@ -37,7 +39,11 @@ public class AppAPI extends AppBase {
 		
 		// Must specify this is the Applications type
 		appConfig.setConfigType(AppConfig.TYPE_APP_ONLY);
-		return show(appConfig, showSegment);
+		String sResponse = show(appConfig, showSegment);
+		
+		// Parse the response correctly
+		return ParseAppShow.strToAppModel(sResponse, appConfig);
+
 	}
 
 	public ArrayList<MetricNameModel> metricNames(MetricConfig metricConfig) throws IOException {

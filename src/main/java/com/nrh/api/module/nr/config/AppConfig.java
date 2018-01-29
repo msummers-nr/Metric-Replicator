@@ -18,11 +18,6 @@ public class AppConfig {
   private boolean sortHealthStatus;
   private Map<String, String> filterMap = new HashMap<>();
 
-  public String getUniqueId() {
-    String uniqueId = appId + "." + hostId + "." + instanceId;
-    return uniqueId;
-  }
-
   public String getConfigType() {
     return configType;
   }
