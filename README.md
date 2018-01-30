@@ -46,64 +46,45 @@ This task will copy metrics from a source account (through the Applications API)
 ```
 	tasks {
 		metricsCopier {
-			enabled = true
-			
-			dest = {
-				account = "ABC"
-				eventType = "MetricTest1"
-			}
-			
-			source = {
-				account = "DEF"
-				
-				applicationList = [
-					"Storefront"
-					"Order Service"
-					"User Service"
-					"Inventory Service"
-				]
-				
-				applications = {
-					"Storefront".appId = 123
-					"Order Service".appId = 456
-					"User Service".appId = 789
-					"Inventory Service".appId = 101112
-				}
-
-				metricList = [
-					"MetricsReported"
-					"Errors"
-					"HttpDispatcher"
-				]
-
-				metrics = {
-					"MetricsReported" = {
-						mName = "Agent/MetricsReported/count"
-					}
-					"Errors" = {
-						mName = "Errors/all"
-					}
-					"HttpDispatcher" = {
-						mName = "HttpDispatcher"
-					}
-				}
-			}
+			enabled = false
+			source.account = "defaultAccount"
+			source.metricFile = "config/metricsTemplate.csv"
+			dest.account = "defaultAccount"
+			dest.eventType = "MetricTest"
 		}
   }
 ```
 
 Here are all the sections underneath `tasks.metricsCopier`:
 * `enabled` (default: false) - set to true so you can use this task
+* `source.account` - where you will query for data (needs to match the name of an account from the accounts section)
+* `source.metricFile` - location of the metric CSV file containing the source metrics to copy out
 * `dest.account` - where you want to publish the results (needs to match the name of an account from the accounts section)
 * `dest.eventType` - name of the eventType in Insights for the created events
-* `source.account` - where you will query for data (needs to match the name of an account from the accounts section)
-* `source.applicationList` - array of applications you will use (names must match below)
-* `source.applications` - object with the application names and appIds, note the syntax required
-* `source.metricList` - array of metrics you will use (names must match below)
-* `source.metrics` - object with the metric short names and long names, note the syntax required
+
+In addition to the config file you need to make a metric CSV with the metrics you want to copy out. Copy the `metricTemplate.csv` file and then add in your values. Here are the fields for the CSV:
+* `appName` - name of the application
+* `appId` - application id in the New Relic API
+* `getHosts` - (default: false) whether to get metrics at the host level
+* `getInstances` - (default: false) whether to get metrics at the instance level
+* `metricName` - exact metric name to query
+* `shortName` - short version of the name
 
 ## Synthetics Copier Task
-TBD
+This task will query the current result (SUCCESS or FAIL) for every location for every monitor. It publishes the response data in the same format as this [Synthetics Plugin](https://newrelic.com/plugins/ahrens-design-group/551) as well as sending the data as Insights events.
+```
+	tasks {
+		syntheticsCopier {
+			enabled = false
+			source.account = "defaultAccount"
+			dest.account = "defaultAccount"
+		}
+	}
+```
+Here are all the sections underneath `tasks.metricsCopier`:
+* `enabled` (default: false) - set to true so you can use this task
+* `source.account` - where you will query for data (needs to match the name of an account from the accounts section)
+* `dest.account` - where you want to publish the results (needs to match the name of an account from the accounts section)
 
 # API Details
 There are multiple API systems involved, these tables have additional details.

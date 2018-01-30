@@ -1,3 +1,7 @@
+# Don't upload custom config files, except the templates
+/config/*
+!/config/template.conf
+!/config/metricsTemplate.csv
 
 .classpath
 .project
@@ -31,9 +35,6 @@ gradle-app.setting
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 
-# Don't upload custom config files, except the template
-/config/*
-!/config/template.conf
 
 # VSCode
 .vscode
