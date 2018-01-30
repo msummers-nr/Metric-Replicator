@@ -41,7 +41,7 @@ public class TestRestAPI {
 		
 		// Read in the config files
 		APIApplication.readConfig();
-		log.info("Config file used: " + APIApplication.getConfig().origin());
+		// log.info("Config file used: " + APIApplication.getConfig().origin());
 
 		// Get the name of the unitTestAccount
 		String unitTestAccount = APIApplication.getConfString("newrelic-api-client.tests.unitTestAccount");
