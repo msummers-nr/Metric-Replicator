@@ -114,10 +114,16 @@ public class ExtractMetrics {
   }
 
   private MetricConfig instanceModelToConfig(AppInstanceModel appInstanceModel, MetricConfig oldConfig) {
-    MetricConfig newConfig = hostModelToConfig(appInstanceModel, oldConfig);
-    newConfig.setPort(appInstanceModel.getPort());
-    newConfig.setInstanceId(appInstanceModel.getInstanceId());
-    return newConfig;
+    try {
+      MetricConfig newConfig = (MetricConfig)oldConfig.clone();
+      newConfig.setHost(appInstanceModel.getHost());
+      newConfig.setPort(appInstanceModel.getPort());
+      newConfig.setInstanceId(appInstanceModel.getInstanceId());
+      return newConfig;
+    } catch (CloneNotSupportedException cnse) {
+      log.error(cnse.getMessage());
+    }
+    return null;
   }
 
   @Trace
