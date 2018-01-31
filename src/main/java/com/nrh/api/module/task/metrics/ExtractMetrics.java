@@ -132,14 +132,14 @@ public class ExtractMetrics {
     ArrayList<MetricDataModel> resultList = new ArrayList<>();
 
     // Loop through the metric configs
-    log.info("About to query metric data from: " + cfgList.size() + " apps.");
+    log.info("About to query metric data from: " + cfgList.size() + " apps / hosts / instances");
 
     for (MetricConfig metricConfig : cfgList) {
       ArrayList<MetricDataModel> metricDataList = runProperQuery(metricConfig);
       resultList.addAll(metricDataList);
     }
 
-    log.info("Finished querying metric data for " + resultList.size() + " metrics.");
+    log.info("Received metric data for " + resultList.size() + " metrics.");
     return resultList;
   }
 
