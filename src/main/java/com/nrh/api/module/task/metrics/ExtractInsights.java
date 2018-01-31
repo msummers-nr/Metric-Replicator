@@ -83,9 +83,9 @@ public class ExtractInsights {
     }
     
     // Grab the values from each segment to re-create the MetricConfig
-    Integer appId = Integer.parseInt(idSegments[0]);
-    Integer hostId = Integer.parseInt(idSegments[1]);
-    Integer instanceId = Integer.parseInt(idSegments[2]);
+    Integer appId = safeParseInt(idSegments[0]);
+    Integer hostId = safeParseInt(idSegments[1]);
+    Integer instanceId = safeParseInt(idSegments[2]);
     String fullName = idSegments[3];
     // MetricConfig metricConfig = new MetricConfig(appId, hostId, instanceId);
     
@@ -93,6 +93,15 @@ public class ExtractInsights {
     // MetricNameModel metricNameModel = new MetricNameModel(metricConfig, metricName);
     MetricNameModel metricNameModel = new MetricNameModel(appId, hostId, instanceId, fullName);
     return metricNameModel;
+  }
+
+  private Integer safeParseInt(String idSegment) {
+    try {
+      return Integer.parseInt(idSegment);
+    } catch (NumberFormatException nfe) {
+      log.error("Trouble parsing uniqueId segment : " + idSegment + " defaulting to 0");
+    }
+    return 0;
   }
 
   private long getLatestFromFacet(JSONObject jFacet) {
