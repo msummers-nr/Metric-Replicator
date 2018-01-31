@@ -9,9 +9,7 @@ public class CSVMetric {
   @CsvBindByName
   private Integer appId;
   @CsvBindByName
-  private Boolean getHosts = false;
-  @CsvBindByName
-  private Boolean getInstances = false;
+  private String configType;
   @CsvBindByName
   private String metricName;
   @CsvBindByName
@@ -40,6 +38,18 @@ public class CSVMetric {
    */
   public void setAppName(String appName) {
     this.appName = appName;
+  }
+  /**
+   * @return the configType
+   */
+  public String getConfigType() {
+    return configType;
+  }
+  /**
+   * @param configType the configType to set
+   */
+  public void setConfigType(String configType) {
+    this.configType = configType;
   }
   /**
    * @return the metricName

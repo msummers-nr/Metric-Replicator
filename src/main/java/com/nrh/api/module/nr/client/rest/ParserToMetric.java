@@ -34,10 +34,11 @@ public class ParserToMetric {
     // Loop over the metrics
     for (int i = 0; i < jMetricList.length(); i++) {
       JSONObject jMetric = jMetricList.getJSONObject(i);
-      String sName = jMetric.getString("name");
+      String fullName = jMetric.getString("name");
+      String shortName = metricConfig.getShortName(fullName);
       
       // Create the model (result)
-      MetricNameModel model = new MetricNameModel(metricConfig, sName);
+      MetricNameModel model = new MetricNameModel(metricConfig, fullName, shortName);
       metricNameList.add(model);
     }
 
@@ -66,15 +67,19 @@ public class ParserToMetric {
     return parseMetricArr(metricConfig, jMetricArr);
   }
 
-  private static ArrayList<MetricDataModel> parseMetricArr(MetricConfig cfg, JSONArray jMetricArr) {
+  private static ArrayList<MetricDataModel> parseMetricArr(MetricConfig metricConfig, JSONArray jMetricArr) {
     ArrayList<MetricDataModel> metricList = new ArrayList<>();
 
     // Loop through the array of metrics
     for (int i=0; i < jMetricArr.length(); i++) {
-      // Create the metric
+      
+      // Get the full and short names
       JSONObject jMetric = jMetricArr.getJSONObject(i);
-      String sName = jMetric.getString("name");
-      MetricDataModel metric = new MetricDataModel(cfg, sName);
+      String fullName = jMetric.getString("name");
+      String shortName = metricConfig.getShortName(fullName);
+
+      // Create the metric
+      MetricDataModel metric = new MetricDataModel(metricConfig, fullName, shortName);
       metricList.add(metric);
 
       // Add timeslices to the metric

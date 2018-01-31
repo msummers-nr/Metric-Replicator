@@ -19,11 +19,11 @@ public class ExtractInsights {
   
   private static final String NRQL = "SELECT latest(timestamp) FROM {eventType} FACET uniqueId LIMIT 1000";
   
-  private CopierConfig copierConfig;
+  private String eventType;
   private InsightsAPI destInsights;
 
   public ExtractInsights(CopierConfig copierConfig) {
-    this.copierConfig = copierConfig;
+    this.eventType = copierConfig.getEventType();
     destInsights = new InsightsAPI(copierConfig.getDestKeys());
   }
   
@@ -32,7 +32,7 @@ public class ExtractInsights {
     
     // Use the correct eventType
     log.info("About to query Insights");
-    String nrqlLive = NRQL.replace("{eventType}", copierConfig.getEventType());
+    String nrqlLive = NRQL.replace("{eventType}", eventType);
     JSONArray jFacets = runQuery(nrqlLive);
     
     // Loop over each of the facets received

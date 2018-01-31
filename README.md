@@ -65,8 +65,7 @@ Here are all the sections underneath `tasks.metricsCopier`:
 In addition to the config file you need to make a metric CSV with the metrics you want to copy out. Copy the `metricTemplate.csv` file and then add in your values. Here are the fields for the CSV:
 * `appName` - name of the application
 * `appId` - application id in the New Relic API
-* `getHosts` - (default: false) whether to get metrics at the host level
-* `getInstances` - (default: false) whether to get metrics at the instance level
+* `configType` - you must choose whether to collect data at the `application`, `application_host` or `application_instance`
 * `metricName` - exact metric name to query
 * `shortName` - short version of the name
 

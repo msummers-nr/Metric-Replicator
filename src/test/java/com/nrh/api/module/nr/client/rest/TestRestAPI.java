@@ -69,7 +69,11 @@ public class TestRestAPI {
 			if (appModel.getReporting()) {
 				appId = appModel.getAppId();
 				String appName = appModel.getAppName();
-				metricConfig = new MetricConfig(appId, appName);
+				
+				// Create the new config
+				metricConfig = new MetricConfig();
+				metricConfig.setAppId(appId);
+				metricConfig.setAppName(appName);
 				log.info("Setting appId to this reporting app: " + appName + " (" + appId + ")");
 				break;
 			}
@@ -106,7 +110,7 @@ public class TestRestAPI {
 			// Add metrics to the list unless they start with Instance
 			// String fullName = jMetrics.getJSONObject(i).getString("name");
 			if (!fullName.startsWith("Instance")) {
-				metricConfig.addMetricName(fullName);
+				metricConfig.addMetricName(fullName, fullName);
 				metricCount++;
 			}
 		}

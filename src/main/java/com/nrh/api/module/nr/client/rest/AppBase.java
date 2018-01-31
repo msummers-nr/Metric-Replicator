@@ -7,6 +7,7 @@ import com.nrh.api.module.nr.model.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +72,7 @@ public abstract class AppBase {
 		Builder urlBuilder = Util.startBuilder(URL_HOST, segment);
 
 		// Add the optional parameters if they are provided
-		ArrayList<String> metricNameList = metricConfig.getMetricNameList();
+		Collection<String> metricNameList = metricConfig.getMetricNameList();
 		if (metricNameList != null) {
 			for (String metricName : metricNameList ) {
 				urlBuilder.addEncodedQueryParameter("names[]", metricName);

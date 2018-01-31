@@ -3,8 +3,7 @@ package com.nrh.api.module.task.metrics;
 import static org.junit.Assert.*;
 
 import com.nrh.api.APIApplication;
-import com.nrh.api.module.nr.config.MetricConfig;
-import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +24,7 @@ public class TestCopierConfig {
     
     // This test will make sure the config is created and doesn't return a null
     CopierConfig copierConfig = new CopierConfig();
-    ArrayList<MetricConfig> cfgList = copierConfig.getCfgList();
-    assertNotNull(cfgList);
+    List<CSVMetric> csvMetricList = copierConfig.getCsvMetricList();
+    assertNotNull(csvMetricList);
   }
 }

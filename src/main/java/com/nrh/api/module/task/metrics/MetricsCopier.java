@@ -1,6 +1,7 @@
 package com.nrh.api.module.task.metrics;
 
 import com.newrelic.api.agent.Trace;
+import com.nrh.api.module.nr.config.*;
 import com.nrh.api.module.nr.model.*;
 
 import java.io.IOException;
@@ -48,13 +49,16 @@ public class MetricsCopier {
     
     log.info("Copy starting");
 
-    // Extract from both insights and the REST API
+    // Extract the latest values from Insights
     Map<String, Date> latestMap = extractInsights.queryInsights();
-    ArrayList<MetricDataModel> metricData = extractMetrics.queryMetricData();
+    
+    // Extract the current host/instance ids (if applicable) and get metrics
+    ArrayList<MetricConfig> metricConfigList = extractMetrics.prepConfig();
+    ArrayList<MetricDataModel> metricDataList = extractMetrics.queryMetricData(metricConfigList);
 
     // Transform to events then load to the destination account
-    Transform transform = new Transform(config);
-    ArrayList<Event> eventList = transform.toEvents(latestMap, metricData);
+    Transform transform = new Transform(config.getEventType());
+    ArrayList<Event> eventList = transform.toEvents(latestMap, metricDataList);
     load.post(eventList);
 
     // Clean up

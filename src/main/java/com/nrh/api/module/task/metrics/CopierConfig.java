@@ -4,16 +4,13 @@ import com.nrh.api.APIApplication;
 import com.nrh.api.module.nr.config.*;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
-// import com.typesafe.config.Config;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,13 +23,10 @@ public class CopierConfig {
   private APIKeyset destKeys;
   private APIKeyset sourceKeys;
   private String eventType;
-  // private Config conf;
-
-  private ArrayList<MetricConfig> cfgList;
+  private List<CSVMetric> csvMetricList;
 
   public CopierConfig() {
-    // this.conf = APIApplication.getConfig();
-    this.cfgList = new ArrayList<>();
+    this.csvMetricList = new ArrayList<>();
 
     readSourceConfig();
     readDestConfig();
@@ -51,10 +45,6 @@ public class CopierConfig {
     String sPropSourceCSV = sProp + ".metricFile";
     String metricFile = APIApplication.getConfString(sPropSourceCSV);
     readMetricFile(metricFile);
-
-    // Read the applications section, then the metrics section
-    // readSourceApps(sProp);
-    // readSourceMetrics(sProp);
   }
 
   private void readMetricFile(String metricFile) {
@@ -67,63 +57,14 @@ public class CopierConfig {
         .build();
 
       // Parse the CSV file into a list of values
-      List<CSVMetric> csvMetricList = csvToBean.parse();
+      csvMetricList = csvToBean.parse();
       log.info("Read : " + csvMetricList.size() + " rows from " + metricFile);
-      Map<Integer, MetricConfig> metricMap = new HashMap<>();
-      for (CSVMetric csvMetric : csvMetricList) {
-        String appName = csvMetric.getAppName();
-        Integer appId = csvMetric.getAppId();
-
-        // Create a new config if it doesn't exist
-        MetricConfig metricConfig = metricMap.getOrDefault(appId, new MetricConfig(appId, appName));
-        metricConfig.addMetricName(csvMetric.getMetricName());
-        metricMap.put(appId, metricConfig);
-      }
-
-      // Add all the configs from the CSV to the main list
-      cfgList.addAll(metricMap.values());
 
     } catch (IOException ioe) {
       log.error(ioe.getMessage());
       log.error(ioe.getLocalizedMessage());
     }
   }
-
-  // private void readSourceMetrics(String sProp) {
-  //   // Get the list of metrics
-  //   String sPropMetricList = sProp + ".metricList";
-  //   List<String> sMetricList = conf.getStringList(sPropMetricList);
-
-  //   // Create a Metric object for each metric
-  //   ArrayList<String> metricList = new ArrayList<>();
-  //   for (String shortName : sMetricList) {
-  //     String sPropMetricFullName = sProp + ".metrics." + shortName + ".mName";
-  //     String fullName = conf.getString(sPropMetricFullName);
-  //     metricList.add(fullName);
-  //   }
-  //   log.info("Loaded " + metricList.size() + " metric names from config");
-
-  //   // Add all of the metrics to all of the configs
-  //   for (MetricConfig cfg : cfgList) {
-  //     cfg.setMetricNameList(metricList);
-  //   }
-  // }
-
-  // private void readSourceApps(String sProp) {
-  //   // Get the list of apps
-  //   String sPropAppList = sProp + ".applicationList";
-  //   List<String> sAppList = conf.getStringList(sPropAppList);
-    
-  //   // Create an Application object for each app
-  //   for (String appName : sAppList) {
-  //     String sPropAppId = sProp + ".applications." + appName + ".appId";
-  //     Integer appId = conf.getInt(sPropAppId);
-  //     MetricConfig metricConfig = new MetricConfig(appId, appName);
-  //     cfgList.add(metricConfig);
-  //   }
-
-  //   log.info("Loaded " + cfgList.size() + " apps from config");
-  // }
 
   private void readDestConfig() {
     
@@ -149,7 +90,7 @@ public class CopierConfig {
   public String getEventType() {
     return eventType;
   }
-  public ArrayList<MetricConfig> getCfgList() {
-    return cfgList;
+  public List<CSVMetric> getCsvMetricList() {
+    return csvMetricList;
   }
 }

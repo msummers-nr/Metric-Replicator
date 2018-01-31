@@ -12,8 +12,8 @@ public class MetricDataModel extends MetricNameModel {
   
   private TreeMap<Date, TimesliceModel> tsMap = new TreeMap<Date, TimesliceModel>();
 
-  public MetricDataModel(MetricConfig metricConfig, String name) {
-    super(metricConfig, name);
+  public MetricDataModel(MetricConfig metricConfig, String fullName, String shortName) {
+    super(metricConfig, fullName, shortName);
   }
 
   public SortedMap<Date, TimesliceModel> getTimeslicesSince(Date latest) {

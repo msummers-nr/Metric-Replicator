@@ -8,18 +8,22 @@ public class MetricNameModel {
   private String appName;
   private Integer appId;
   private Integer hostId = 0;
+  private String host;
   private Integer instanceId = 0;
-  
+  private Integer port;
   private String fullName;
   private String shortName;
 
-  public MetricNameModel(MetricConfig metricConfig, String fullName) {
-    // this.metricConfig = metricConfig;
+  public MetricNameModel(MetricConfig metricConfig, String fullName, String shortName) {
     this.appId = metricConfig.getAppId();
     this.appName = metricConfig.getAppName();
     this.hostId = metricConfig.getHostId();
+    this.host = metricConfig.getHost();
     this.instanceId = metricConfig.getInstanceId();
+    this.port = metricConfig.getPort();
+
     this.fullName = fullName;
+    this.shortName = shortName;
   }
 
   public MetricNameModel(Integer appId, Integer hostId, Integer instanceId, String fullName) {
@@ -33,9 +37,6 @@ public class MetricNameModel {
     return appId + "." + hostId + "." + instanceId + "." + fullName;
   }
 
-  // public MetricConfig getMetricConfig() {
-  //   return metricConfig;
-  // }
   public String getAppName() {
     return appName;
   }
@@ -54,8 +55,20 @@ public class MetricNameModel {
   public void setHostId(Integer hostId) {
     this.hostId = hostId;
   }
+  public String getHost() {
+    return host;
+  }
+  public void setHost(String host) {
+    this.host = host;
+  }
   public Integer getInstanceId() {
     return instanceId;
+  }
+  public Integer getPort() {
+    return port;
+  }
+  public void setPort(Integer port) {
+    this.port = port;
   }
   public void setInstanceId(Integer instanceId) {
     this.instanceId = instanceId;

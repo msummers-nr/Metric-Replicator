@@ -1,7 +1,7 @@
 package com.nrh.api.module.nr.config;
 
-import java.util.ArrayList;
-// import java.util.Date;
+import java.util.Collection;
+import java.util.HashMap;
 
 public class MetricConfig extends AppConfig {
   public static final String TYPE_METRIC_NAME = "metrics";
@@ -9,21 +9,10 @@ public class MetricConfig extends AppConfig {
 
   private String metricType;
   private String filterName;
-  private ArrayList<String> metricNameList = new ArrayList<>();
+  private HashMap<String, String> metricNameMap = new HashMap<>();
 
-  public MetricConfig(Integer appId, String appName) {
-    this.appId = appId;
-    this.appName = appName;
-  }
-
-  // public MetricConfig(Integer appId, Integer hostId, Integer instanceId) {
-  //   this.appId = appId;
-  //   this.hostId = hostId;
-  //   this.instanceId = instanceId;
-  // }
-
-  public void addMetricName(String metricName) {
-    metricNameList.add(metricName);
+  public void addMetricName(String fullName, String shortName) {
+    metricNameMap.put(fullName, shortName);
   }
 
   public String getMetricType() {
@@ -41,12 +30,12 @@ public class MetricConfig extends AppConfig {
   public String getFilterName() {
     return filterName;
   }
-  public ArrayList<String> getMetricNameList() {
-    return metricNameList;
+  
+  public Collection<String> getMetricNameList() {
+    return metricNameMap.keySet();
   }
 
-  public void setMetricNameList(ArrayList<String> metricNameList) {
-    this.metricNameList = metricNameList;
+  public String getShortName(String fullName) {
+    return metricNameMap.get(fullName);
   }
-
 }
