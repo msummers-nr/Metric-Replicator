@@ -57,7 +57,8 @@ public class SyntheticsCopier {
     
     // Load the data into Plugin API and Insights Insert API
     plugins.postMessage(transform.toPluginFormat());
-    insights.insertSync(transform.toInsightsFormat());
+    // insights.insertSync(transform.toInsightsFormat());
+    insights.insert(transform.toInsightsFormat());
 
     log.info("Synthetics plugin complete");
   }

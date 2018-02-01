@@ -44,7 +44,7 @@ public class Event {
     }
   }
 
-  public void addNumericAttribute(String name, Double value) {
+  public void addDoubleAttribute(String name, Double value) {
     if (value != null) {
       nAttributes.put(name, value);
     }

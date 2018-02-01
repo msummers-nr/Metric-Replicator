@@ -75,7 +75,7 @@ public class Transform {
     // Double precision attributes
     Map<String, Double> valueMap = ts.getValueMap();
     for (String key : valueMap.keySet()) {
-      e.addNumericAttribute(key, valueMap.get(key));
+      e.addDoubleAttribute(key, valueMap.get(key));
     }
     return e;
   }

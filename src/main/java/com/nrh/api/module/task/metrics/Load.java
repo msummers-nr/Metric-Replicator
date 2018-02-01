@@ -2,6 +2,7 @@ package com.nrh.api.module.task.metrics;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import com.newrelic.api.agent.Trace;
 import com.nrh.api.module.nr.client.InsightsAPI;
 import com.nrh.api.module.nr.model.Event;
@@ -20,9 +21,11 @@ public class Load {
   @Trace
   public void post(ArrayList<Event> eventList) throws IOException {
     if (eventList.size() > 0) {
-      // log.info("There are " + eventList.size() + " events to post");
-      String sResponse = insights.insertSync(eventList);
-      log.info(sResponse);
+      log.info("There are " + eventList.size() + " events to post");
+      List<String> responseList = insights.insert(eventList);
+      for(String sResponse : responseList) {
+        log.info(sResponse);
+      }
     }
   }
 }

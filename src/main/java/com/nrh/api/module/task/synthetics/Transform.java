@@ -1,5 +1,7 @@
 package com.nrh.api.module.task.synthetics;
 
+import com.nrh.api.module.nr.model.Event;
+import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -46,9 +48,10 @@ public class Transform {
     return jPlugin;
   }
   
-  public JSONArray toInsightsFormat() {
-    JSONArray jInsights = dfInsights.getJSON();
-//    log.debug(jInsights.toString(2));
-    return jInsights;
+  public ArrayList<Event> toInsightsFormat() {
+    // JSONArray jInsights = dfInsights.getJSON();
+    // log.debug(jInsights.toString(2));
+    // return jInsights;
+    return dfInsights.getEventList();
   }
 }

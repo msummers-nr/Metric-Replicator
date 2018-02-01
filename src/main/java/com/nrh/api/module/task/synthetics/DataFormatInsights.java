@@ -1,22 +1,20 @@
 package com.nrh.api.module.task.synthetics;
 
+import com.nrh.api.module.nr.model.Event;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 public class DataFormatInsights {
 
-  private JSONArray jArr = new JSONArray();
+  // private JSONArray jArr = new JSONArray();
+  private ArrayList<Event> eventList = new ArrayList<>();
 
   public void addMonitorData(DataConverter converter) {
-    // Setup the event with some basic info
-    JSONObject jEvent = new JSONObject();
-    jEvent.put("eventType", "ExtraSyntheticsInfo");
-    jEvent.put("timestamp", new Date().getTime());
-    jEvent.put("monitorName", converter.getMonitorName());
+    Event e = new Event("ExtraSyntheticsInfo");
+    e.setTimestamp(new Date());
+    e.addStringAttribute("monitorName", converter.getMonitorName());
     
     // Add all of the metrics from the Insights map
     Map<String, Double> mInsightsMetrics = converter.getInsightsMap();
@@ -24,14 +22,14 @@ public class DataFormatInsights {
     while (iter.hasNext()) {
       String sMetricName = iter.next();
       Double dMetricValue = mInsightsMetrics.get(sMetricName);
-      jEvent.put(sMetricName, dMetricValue);
+      e.addDoubleAttribute(sMetricName, dMetricValue);
     }
     
     // Add this newly created event to the array
-    jArr.put(jEvent);
+    eventList.add(e);
   }
   
-  public JSONArray getJSON() {
-    return jArr;
+  public ArrayList<Event> getEventList() {
+    return eventList;
   }
 }

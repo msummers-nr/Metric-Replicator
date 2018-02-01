@@ -3,7 +3,8 @@ package com.nrh.api.module.nr.client;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 import com.nrh.api.APIApplication;
 import com.nrh.api.module.nr.config.APIKeyset;
+import com.nrh.api.module.nr.model.Event;
 
 @RunWith(SpringRunner.class)
 public class TestInsights {
@@ -59,24 +61,37 @@ public class TestInsights {
 	public void testInsertSync() throws IOException {
 		
 		// Create an array with a couple of events
-		JSONArray jEvents = new JSONArray();
-		jEvents.put(new JSONObject()
-			.put("eventType", "ZZZTest")
-			.put("testInt", 100)
-			.put("testString", "Test100Value")
-		);
-		jEvents.put(new JSONObject()
-			.put("eventType", "ZZZTest")
-			.put("testInt", 50)
-			.put("testString", "Test50Value")
-		);
+		// JSONArray jEvents = new JSONArray();
+		// jEvents.put(new JSONObject()
+		// 	.put("eventType", "ZZZTest")
+		// 	.put("testInt", 100)
+		// 	.put("testString", "Test100Value")
+		// );
+		// jEvents.put(new JSONObject()
+		// 	.put("eventType", "ZZZTest")
+		// 	.put("testInt", 50)
+		// 	.put("testString", "Test50Value")
+		// );
+		List<Event> eventList = new ArrayList<>();
+		Event e1 = new Event("ZZZTest");
+		e1.addIntAttribute("testInt", 100);
+		e1.addDoubleAttribute("testDouble", 100.0);
+		e1.addStringAttribute("testString", "Test100Value");
+		eventList.add(e1);
+		Event e2 = new Event("ZZZTest");
+		e2.addIntAttribute("testInt", 50);
+		e2.addDoubleAttribute("testDouble", 50.0);
+		e2.addStringAttribute("testString", "Test50Value");
+		eventList.add(e1);
 		
 		// Insert those events via API call
-		String sResponse = insights.insertSync(jEvents);
+		List<String> responseList = insights.insert(eventList);
 
 		// Convert the response into JSON
-		JSONObject jResponse = new JSONObject(sResponse);
-		boolean bSuccess = jResponse.getBoolean("success");
-		assertTrue(bSuccess);
+		for (String sResponse : responseList) {
+			JSONObject jResponse = new JSONObject(sResponse);
+			boolean bSuccess = jResponse.getBoolean("success");
+			assertTrue(bSuccess);
+		}
 	}
 }

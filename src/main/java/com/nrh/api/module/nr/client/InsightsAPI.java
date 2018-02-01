@@ -4,6 +4,7 @@ import com.nrh.api.module.nr.config.APIKeyset;
 import com.nrh.api.module.nr.model.Event;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,15 +51,15 @@ public class InsightsAPI {
 		return rsp.body().string();
 	}
 
-	/**
-	 * Call the Insights Insert API to publish this JSON Array of events
-	 * 
-	 * @param jEvents
-	 * @return
-	 * @throws IOException
-	 */
-	public String insertSync(JSONArray jEvents) throws IOException {
+	private String insertSubList(List<Event> subList) throws IOException {
+		// Turn into JSON
+		JSONArray jEvents = new JSONArray();
+		for (Event event : subList) {
+			jEvents.put(event.toJSON());
+		}
+		
 		// Use the helper to make the Request object
+		log.info("Publishing " + jEvents.length() + " events");
 		Request req = prepInsertRequest(jEvents);
 
 		// Synchronous call
@@ -69,12 +70,19 @@ public class InsightsAPI {
 	/**
 	 * Call the Insights Insert API to publish this list of Event objects
 	 */
-	public String insertSync(ArrayList<Event> eventList) throws IOException {
-		JSONArray jEvents = new JSONArray();
-		for (Event event : eventList) {
-			jEvents.put(event.toJSON());
+	public List<String> insert(List<Event> eventList) throws IOException {
+		
+		List<String> resultList = new ArrayList<>();
+
+		// Batch in groups of 1000
+		for (int fromIndex = 0; fromIndex < eventList.size(); fromIndex+=1000) {
+			// Figure out the end
+			int toIndex = Math.min(fromIndex + 1000, eventList.size());
+			List<Event> subList = eventList.subList(fromIndex, toIndex);
+			String sResult = insertSubList(subList);
+			resultList.add(sResult);
 		}
-		return insertSync(jEvents);
+		return resultList;
 	}
 
 	private Request prepQueryRequest(String nrql) {
