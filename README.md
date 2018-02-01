@@ -52,7 +52,7 @@ This task will copy metrics from a source account (through the Applications API)
 			dest.account = "defaultAccount"
 			dest.eventType = "MetricTest"
 		}
-  }
+	}
 ```
 
 Here are all the sections underneath `tasks.metricsCopier`:
@@ -88,21 +88,13 @@ Here are all the sections underneath `tasks.metricsCopier`:
 # API Details
 There are multiple API systems involved, these tables have additional details.
 
-## APIs Supported
+## API Coverage
 | Type | Status | Description |
 |---|---|---|
 | Rest v2 API (not Alerts) | Partial | Query apps, metric names and data and POST to Plugins |
-| Rest v2 API (Alerts) | Not supported yet | Broke out Alerts separately, it's a large set of APIs |
+| Rest v2 API (Alerts) | Not supported yet | Alerts in a separate list because it's a large set of APIs |
 | Insights API | Partial | The query and insert calls are supported |
 | Synthetics API | Not supported yet | CRUD functionality for Synthetic Monitors |
-
-## APIs To Do
-| Type | Description |
-|---|---|
-| Rest v2 API (not Alerts) | Need to add support for other endpoints (Mobile, Browser, Alerts, etc.) |
-| Rest v2 API (Alerts) | Need all capabilities |
-| Insights API | Needs an ability to potentially return results as DAO |
-| Synthetics API | Need all capabilities |
 
 ## Deprecated / Will Not Support
 * Servers
