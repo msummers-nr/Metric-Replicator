@@ -60,32 +60,23 @@ public class TestInsights {
 	@Test
 	public void testInsertSync() throws IOException {
 		
-		// Create an array with a couple of events
-		// JSONArray jEvents = new JSONArray();
-		// jEvents.put(new JSONObject()
-		// 	.put("eventType", "ZZZTest")
-		// 	.put("testInt", 100)
-		// 	.put("testString", "Test100Value")
-		// );
-		// jEvents.put(new JSONObject()
-		// 	.put("eventType", "ZZZTest")
-		// 	.put("testInt", 50)
-		// 	.put("testString", "Test50Value")
-		// );
 		List<Event> eventList = new ArrayList<>();
-		Event e1 = new Event("ZZZTest");
-		e1.addIntAttribute("testInt", 100);
-		e1.addDoubleAttribute("testDouble", 100.0);
-		e1.addStringAttribute("testString", "Test100Value");
-		eventList.add(e1);
-		Event e2 = new Event("ZZZTest");
-		e2.addIntAttribute("testInt", 50);
-		e2.addDoubleAttribute("testDouble", 50.0);
-		e2.addStringAttribute("testString", "Test50Value");
-		eventList.add(e1);
+
+		// Test with 9987 events
+		int count = 9987;
+		for(int i=0; i < count; i++) {
+			Event e = new Event("ZZZTest");
+			e.addIntAttribute("testInt", i);
+			e.addDoubleAttribute("testDouble", Math.random());
+			e.addStringAttribute("testString", "TestValue");
+			eventList.add(e);
+		}
 		
 		// Insert those events via API call
 		List<String> responseList = insights.insert(eventList);
+		
+		// 9987 events should be broken into 10 chunks
+		assertEquals(10, responseList.size());
 
 		// Convert the response into JSON
 		for (String sResponse : responseList) {
