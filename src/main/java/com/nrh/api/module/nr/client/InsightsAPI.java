@@ -17,56 +17,22 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class InsightsAPI {
-	
 	private static final Logger log = LoggerFactory.getLogger(InsightsAPI.class);
 	
-	public static final String URL_SCHEME = "https";
-	public static final String URL_QUERY_HOST = "insights-api.newrelic.com";
-	public static final String URL_QUERY_PATH = "v1/accounts/{account_id}/query";
 	public static final String URL_INSERT_HOST = "insights-collector.newrelic.com";
 	public static final String URL_INSERT_PATH = "v1/accounts/{account_id}/events";
+	public static final String URL_QUERY_HOST = "insights-api.newrelic.com";
+	public static final String URL_QUERY_PATH = "v1/accounts/{account_id}/query";
+	public static final String URL_SCHEME = "https";
 	
-	private APIKeyset keys;
 	private OkHttpClient client;
+	private APIKeyset keys;
 	
 	public InsightsAPI(APIKeyset keys) {
 		this.keys = keys;
 		client = new OkHttpClient();
 	}
 	
-	/***
-	 * Call the Insights query API for this NRQL
-	 * 
-	 * @param nrql
-	 * @return
-	 * @throws IOException
-	 */
-	public String querySync(String nrql) throws IOException {
-		
-		// Use the helper to make the Request object
-		Request req = prepQueryRequest(nrql);
-		
-		// Synchronous call
-		Response rsp = Util.callSync(client, req);
-		return rsp.body().string();
-	}
-
-	private String insertSubList(List<Event> subList) throws IOException {
-		// Turn into JSON
-		JSONArray jEvents = new JSONArray();
-		for (Event event : subList) {
-			jEvents.put(event.toJSON());
-		}
-		
-		// Use the helper to make the Request object
-		log.info("Publishing " + jEvents.length() + " events");
-		Request req = prepInsertRequest(jEvents);
-
-		// Synchronous call
-		Response rsp = Util.callSync(client, req);
-		return rsp.body().string();
-	}
-
 	/**
 	 * Call the Insights Insert API to publish this list of Event objects
 	 */
@@ -83,6 +49,43 @@ public class InsightsAPI {
 			resultList.add(sResult);
 		}
 		return resultList;
+	}
+
+	private String insertSubList(List<Event> subList) throws IOException {
+		// Turn into JSON
+		JSONArray jEvents = new JSONArray();
+		for (Event event : subList) {
+			jEvents.put(event.toJSON());
+		}
+		
+		// Use the helper to make the Request object
+		log.debug("Publishing " + jEvents.length() + " events");
+		Request req = prepInsertRequest(jEvents);
+
+		// Synchronous call
+		Response rsp = Util.callSync(client, req);
+		return rsp.body().string();
+	}
+
+	private Request prepInsertRequest(JSONArray jEvents) {
+		// Replace the accountId in the path
+		String pathSegment = URL_INSERT_PATH.replace("{account_id}", keys.getAccountId());
+		log.debug("Insert Path Segment: " + pathSegment);
+
+		// Create the URL with the proper path and post value
+		HttpUrl httpUrl = new HttpUrl.Builder()
+			.scheme(URL_SCHEME)
+			.host(URL_INSERT_HOST)
+			.addPathSegments(pathSegment)
+			.build();
+
+		// Create the request
+		Request req = new Request.Builder()
+			.url(httpUrl)
+			.addHeader("X-Insert-Key", keys.getInsightsInsertKey())
+			.post(RequestBody.create(Util.JSON_UTF8, jEvents.toString()))
+			.build();
+		return req;
 	}
 
 	private Request prepQueryRequest(String nrql) {
@@ -106,25 +109,21 @@ public class InsightsAPI {
 		return req;
 	}
 
-	private Request prepInsertRequest(JSONArray jEvents) {
-		// Replace the accountId in the path
-		String pathSegment = URL_INSERT_PATH.replace("{account_id}", keys.getAccountId());
-		log.debug("Insert Path Segment: " + pathSegment);
-
-		// Create the URL with the proper path and post value
-		HttpUrl httpUrl = new HttpUrl.Builder()
-			.scheme(URL_SCHEME)
-			.host(URL_INSERT_HOST)
-			.addPathSegments(pathSegment)
-			.build();
-
-		// Create the request
-		Request req = new Request.Builder()
-			.url(httpUrl)
-			.addHeader("X-Insert-Key", keys.getInsightsInsertKey())
-			.post(RequestBody.create(Util.JSON_UTF8, jEvents.toString()))
-			.build();
-		return req;
+	/***
+	 * Call the Insights query API for this NRQL
+	 * 
+	 * @param nrql
+	 * @return
+	 * @throws IOException
+	 */
+	public String querySync(String nrql) throws IOException {
+		
+		// Use the helper to make the Request object
+		Request req = prepQueryRequest(nrql);
+		
+		// Synchronous call
+		Response rsp = Util.callSync(client, req);
+		return rsp.body().string();
 	}
 	
 	// public void queryAsync(String nrql, Callback cb) throws IOException {

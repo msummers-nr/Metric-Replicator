@@ -3,22 +3,17 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.0.RELEASE")
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
-apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 
 jar {
     baseName = 'newrelic-api-client-java'
     version =  '0.1.0'
-}
-
-test {
-    systemProperty "config.file", System.getProperty("config.file")
 }
 
 repositories {
@@ -30,20 +25,11 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    // testCompile 'junit:junit:4.12'
-    testCompile("org.springframework.boot:spring-boot-starter-test")
-
-    // The production code uses the SLF4J logging API at compile time
-    compile 'org.slf4j:slf4j-api:1.7.21'
-    
-    // Project dependencies: okhttp3, opencsv, typesafe config, org.json, newrelic-api
+    compile 'org.springframework.boot:spring-boot-starter:2.0.0.RELEASE'
     compile 'com.squareup.okhttp3:okhttp:3.9.0'
     compile "com.opencsv:opencsv:4.0"
-    compile group: 'com.typesafe', name: 'config', version: '1.0.2'
-    compile group: 'org.json', name: 'json', version: '20170516'
-    compile group: 'com.newrelic.agent.java', name: 'newrelic-api', version: '3.46.0'
-    
-    // JPA Starter includes DB code
-    compile("org.springframework.boot:spring-boot-starter-data-jpa")
-    compile("com.h2database:h2")
+    compile 'com.typesafe:config:1.0.2'
+    //compile 'org.json:json:20170516'
+    compile group: 'org.json', name: 'json', version: '20180130'
+    compile 'com.newrelic.agent.java:newrelic-api:3.46.0'
 }

@@ -11,86 +11,95 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CopierConfig {
 
-  private static final Logger log = LoggerFactory.getLogger(CopierConfig.class);
-  
-  private static final String PREFIX = "newrelic-api-client.tasks.metricsCopier";
+	private static final Logger log = LoggerFactory.getLogger(CopierConfig.class);
 
-  private APIKeyset destKeys;
-  private APIKeyset sourceKeys;
-  private String eventType;
-  private List<CSVMetric> csvMetricList;
+	private static final String PREFIX = "newrelic-api-client.tasks.metricsCopier";
 
-  public CopierConfig() {
-    this.csvMetricList = new ArrayList<>();
+	private APIKeyset destKeys;
+	private APIKeyset sourceKeys;
+	private String eventType;
+	private List<CSVMetric> csvMetricList;
 
-    readSourceConfig();
-    readDestConfig();
-  }
+	public CopierConfig() {
+	}
 
-  private void readSourceConfig() {
-    // Property strings used
-    String sProp = PREFIX + ".source";
-    String sPropSourceAccount = sProp + ".account";
+	@PostConstruct
+	private void postConstruct() {
+		this.csvMetricList = new ArrayList<>();
+		readSourceConfig();
+		readDestConfig();
+	}
 
-    // Setup the API Keys
-    String sSourceAccount = APIApplication.getConfString(sPropSourceAccount);
-    sourceKeys = new APIKeyset(APIApplication.getConfig(), sSourceAccount);
+	private void readSourceConfig() {
+		// Property strings used
+		String sProp = PREFIX + ".source";
+		String sPropSourceAccount = sProp + ".account";
 
-    // Read the CSV file
-    String sPropSourceCSV = sProp + ".metricFile";
-    String metricFile = APIApplication.getConfString(sPropSourceCSV);
-    readMetricFile(metricFile);
-  }
+		// Setup the API Keys
+		String sSourceAccount = APIApplication.getConfString(sPropSourceAccount);
+		sourceKeys = new APIKeyset(APIApplication.getConfig(), sSourceAccount);
 
-  private void readMetricFile(String metricFile) {
-    try {
-      // Setup the file reader and converter
-      Reader reader = Files.newBufferedReader(Paths.get(metricFile));
-      CsvToBean<CSVMetric> csvToBean = new CsvToBeanBuilder<CSVMetric>(reader)
-        .withType(CSVMetric.class)
-        .withIgnoreLeadingWhiteSpace(true)
-        .build();
+		// Read the CSV file
+		String sPropSourceCSV = sProp + ".metricFile";
+		log.info("readSourceConfig: sPropSourceCSV: {}", sPropSourceCSV);
+		String metricFile = APIApplication.getConfString(sPropSourceCSV);
+		log.info("readSourceConfig: metricFile: {}", metricFile);
+		readMetricFile(metricFile);
+	}
 
-      // Parse the CSV file into a list of values
-      csvMetricList = csvToBean.parse();
-      log.info("Read : " + csvMetricList.size() + " rows from " + metricFile);
+	private void readMetricFile(String metricFile) {
+		try {
+			// Setup the file reader and converter
+			Reader reader = Files.newBufferedReader(Paths.get(metricFile));
+			CsvToBean<CSVMetric> csvToBean = new CsvToBeanBuilder<CSVMetric>(reader).withType(CSVMetric.class).withIgnoreLeadingWhiteSpace(true).build();
 
-    } catch (IOException ioe) {
-      log.error(ioe.getMessage());
-      log.error(ioe.getLocalizedMessage());
-    }
-  }
+			// Parse the CSV file into a list of values
+			csvMetricList = csvToBean.parse();
+			log.info("readMetricFile: metricFile: {} csvMetricList.size: {} ", metricFile, csvMetricList.size());
 
-  private void readDestConfig() {
-    
-    // Property strings used
-    String sProp = PREFIX + ".dest";
-    String sPropDestAccount = sProp + ".account";
-    String sPropEventType = sProp + ".eventType";
+		} catch (IOException ioe) {
+			log.error(ioe.getMessage());
+			log.error(ioe.getLocalizedMessage());
+		}
+	}
 
-    // Setup the API Keys
-    String sDestAccount = APIApplication.getConfString(sPropDestAccount);
-    destKeys = new APIKeyset(APIApplication.getConfig(), sDestAccount);
+	private void readDestConfig() {
+		// Property strings used
+		String sProp = PREFIX + ".dest";
+		String sPropDestAccount = sProp + ".account";
+		String sPropEventType = sProp + ".eventType";
 
-    // Reading string values
-    eventType = APIApplication.getConfString(sPropEventType);
-  }
+		// Setup the API Keys
+		String sDestAccount = APIApplication.getConfString(sPropDestAccount);
+		destKeys = new APIKeyset(APIApplication.getConfig(), sDestAccount);
 
-  public APIKeyset getDestKeys() {
-    return destKeys;
-  }
-  public APIKeyset getSourceKeys() {
-    return sourceKeys;
-  }
-  public String getEventType() {
-    return eventType;
-  }
-  public List<CSVMetric> getCsvMetricList() {
-    return csvMetricList;
-  }
+		// Reading string values
+		eventType = APIApplication.getConfString(sPropEventType);
+	}
+
+	public APIKeyset getDestKeys() {
+		return destKeys;
+	}
+
+	public APIKeyset getSourceKeys() {
+		return sourceKeys;
+	}
+
+	public String getEventType() {
+		return eventType;
+	}
+
+	public List<CSVMetric> getCsvMetricList() {
+		return csvMetricList;
+	}
 }

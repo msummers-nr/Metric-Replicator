@@ -21,12 +21,14 @@ public class Util {
 	public static final MediaType JSON_ONLY = MediaType.parse("application/json");
 
 	public static Response callSync(OkHttpClient client, Request req) throws IOException {
+		log.info("callSync: enter");
 		// Synchronous call
 		Response rsp = client.newCall(req).execute();
 		if (!rsp.isSuccessful()) {
 			log.error("Error Message: " + rsp.message());
 			throw new IOException("Bad Status Code: " + rsp);
 		}
+		log.info("callSync: exit");
 		return rsp;
 	}
 

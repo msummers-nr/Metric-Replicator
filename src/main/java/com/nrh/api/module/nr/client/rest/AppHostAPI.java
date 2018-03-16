@@ -21,7 +21,7 @@ public class AppHostAPI extends AppBase {
 
 	public AppHostAPI(APIKeyset keys) {
 		super(keys);
-		log.info("Application Hosts API constructed");
+		//log.info("Application Hosts API constructed");
 	}
 	
 	public ArrayList<AppHostModel> list(AppConfig appConfig) throws IOException {

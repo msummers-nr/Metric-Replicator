@@ -8,32 +8,37 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MetricDataModel extends MetricNameModel {
-  private static final Logger log = LoggerFactory.getLogger(MetricDataModel.class);
-  
-  private TreeMap<Date, TimesliceModel> tsMap = new TreeMap<Date, TimesliceModel>();
+	private static final Logger log = LoggerFactory.getLogger(MetricDataModel.class);
 
-  public MetricDataModel(MetricConfig metricConfig, String fullName, String shortName) {
-    super(metricConfig, fullName, shortName);
-  }
+	private TreeMap<Date, TimesliceModel> tsMap = new TreeMap<Date, TimesliceModel>();
 
-  public SortedMap<Date, TimesliceModel> getTimeslicesSince(Date latest) {
-    if (latest == null) {
-      latest = new Date(0);
-    }
-    SortedMap<Date, TimesliceModel> tailMap = tsMap.tailMap(latest, false);
-    log.debug("* " + getFullName() + " has " + tailMap.size() + " slices since " + latest);
-    return tailMap;
-  }
+	public MetricDataModel(MetricConfig metricConfig, String fullName, String shortName) {
+		super(metricConfig, fullName, shortName);
+	}
 
-  public TreeMap<Date, TimesliceModel> getTsMap() {
-    return tsMap;
-  }
+	public SortedMap<Date, TimesliceModel> getTimeslicesSince(Date latest) {
+		if (latest == null) {
+			latest = new Date(0);
+		}
+		SortedMap<Date, TimesliceModel> tailMap = tsMap.tailMap(latest, false);
+		log.debug("* " + getFullName() + " has " + tailMap.size() + " slices since " + latest);
+		return tailMap;
+	}
 
-  public void setTsMap(TreeMap<Date, TimesliceModel> tsMap) {
-    this.tsMap = tsMap;
-  }
+	public TreeMap<Date, TimesliceModel> getTsMap() {
+		return tsMap;
+	}
 
-  public void addTimeslice(Date date, TimesliceModel ts) {
-    tsMap.put(date, ts);
-  }
+	public void setTsMap(TreeMap<Date, TimesliceModel> tsMap) {
+		this.tsMap = tsMap;
+	}
+
+	public void addTimeslice(Date date, TimesliceModel ts) {
+		//FIXME
+		if (date == null) {
+			log.debug("addTimeslice: null date");
+			return;
+		}
+		tsMap.put(date, ts);
+	}
 }
