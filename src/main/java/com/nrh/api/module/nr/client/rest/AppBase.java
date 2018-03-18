@@ -6,6 +6,7 @@ import com.nrh.api.module.nr.config.*;
 import com.nrh.api.module.nr.model.*;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
@@ -81,11 +82,13 @@ public abstract class AppBase {
 		}
 		log.debug("metricData: url built");
 
-		String sResponse = callAPI(urlBuilder, keys.getRestKey());
+		// Reader reader = getAPIReader(urlBuilder, keys.getRestKey());
+		String response = callAPI(urlBuilder, keys.getRestKey());
 		log.debug("metricData: callAPI");
 
 		metricConfig.setMetricType(MetricConfig.TYPE_METRIC_DATA);
-		ArrayList<MetricDataModel> result = ParserToMetric.strToMetricData(sResponse, metricConfig);
+		// ArrayList<MetricDataModel> result = ParserToMetric.fromReader(reader, metricConfig);
+		ArrayList<MetricDataModel> result = ParserToMetric.strToMetricData(response, metricConfig);
 		log.debug("metricData: exit");
 		return result;
 	}
@@ -104,5 +107,19 @@ public abstract class AppBase {
 		log.trace("callAPI: response: {}", sResponse);
 		log.info("callAPI: exit");
 		return sResponse;
+	}
+
+	@Trace
+	private Reader getAPIReader(Builder urlBuilder, String apiKey) throws IOException {
+		log.info("callAPI: enter");
+		Request request = Util.createRequest(urlBuilder, apiKey);
+		log.info("callAPI: createRequest");
+		Response response = Util.callSync(client, request);
+		log.info("callAPI: callSync");
+		ResponseBody body = response.body();
+		log.info("callAPI: response.body");
+		Reader reader = body.charStream();
+		log.info("callAPI: exit");
+		return reader;
 	}
 }

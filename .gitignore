@@ -1,12 +1,13 @@
 # Don't upload custom config files, except the templates
-/config/*
-!/config/template.conf
-!/config/metricsTemplate.csv
+config/
+#!/config/template.conf
+#!/config/metricsTemplate.csv
 
 .classpath
 .project
 target/
 
+*.log
 .metadata
 bin/
 tmp/
@@ -22,7 +23,7 @@ tmp
 
 # Gradle gitignore files
 .gradle
-/build/
+build/
 
 # Ignore Gradle GUI config
 gradle-app.setting

@@ -29,7 +29,7 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.9.0'
     compile "com.opencsv:opencsv:4.0"
     compile 'com.typesafe:config:1.0.2'
-    //compile 'org.json:json:20170516'
     compile group: 'org.json', name: 'json', version: '20180130'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.4'
     compile 'com.newrelic.agent.java:newrelic-api:3.46.0'
 }

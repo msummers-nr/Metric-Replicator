@@ -126,20 +126,19 @@ public class ExtractMetrics {
 
 	@Trace
 	@Async
-	public CompletableFuture<ArrayList<MetricDataModel>> queryMetricData(ArrayList<MetricConfig> cfgList) throws IOException {
-		log.debug("queryMetricData: enter: cfgList.size: {}", cfgList.size());
+	public CompletableFuture<ArrayList<MetricDataModel>> queryMetricData(ArrayList<MetricConfig> metricConfigs) throws IOException {
+		log.info("queryMetricData: enter: metricConfigs.size: {}", metricConfigs.size());
 		// FIXME figure-out how to set the size to something rational
 		ArrayList<MetricDataModel> resultList = new ArrayList<>(1024);
 		try {
-			// Loop through the metric configs
-			for (MetricConfig metricConfig : cfgList) {
+			for (MetricConfig metricConfig : metricConfigs) {
 				ArrayList<MetricDataModel> metricDataList = runProperQuery(metricConfig);
 				resultList.addAll(metricDataList);
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
-		log.debug("queryMetricData: exit: resultList.size: {}", resultList.size());
+		log.info("queryMetricData: exit: resultList.size: {}", resultList.size());
 		return CompletableFuture.completedFuture(resultList);
 	}
 
