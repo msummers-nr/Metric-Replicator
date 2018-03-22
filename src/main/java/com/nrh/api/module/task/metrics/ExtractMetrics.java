@@ -10,14 +10,24 @@ import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.newrelic.api.agent.Trace;
 import com.nrh.api.module.nr.client.rest.*;
 import com.nrh.api.module.nr.config.*;
 import com.nrh.api.module.nr.model.*;
+
+import reactor.core.publisher.Mono;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+
+import javax.annotation.PostConstruct;
 
 // DIRE WARNING:  Beware of instance vars as this class has a multi-threaded method!!!!
 @Service
@@ -111,17 +121,27 @@ public class ExtractMetrics {
 		return null;
 	}
 
+	@PostConstruct
+	private void postConstruct() throws IOException {
+		this.prepConfig();
+	}
+
+	ArrayList<MetricConfig> prepConfig;
+
 	@Trace
 	public ArrayList<MetricConfig> prepConfig() throws IOException {
 		log.info("prepConfig: enter");
-		ArrayList<MetricConfig> resultList = new ArrayList<>();
-		Collection<MetricConfig> metricConfigList = csvToConfigList();
-		log.info("prepConfig: metricConfigList.size: {}", metricConfigList.size());
-		for (MetricConfig metricConfig : metricConfigList) {
-			resultList.addAll(cfgExpand(metricConfig));
+		if (prepConfig == null) {
+			prepConfig = new ArrayList<>(512);
+			Collection<MetricConfig> metricConfigList = csvToConfigList();
+			log.info("prepConfig: metricConfigList.size: {}", metricConfigList.size());
+			for (MetricConfig metricConfig : metricConfigList) {
+				prepConfig.addAll(cfgExpand(metricConfig));
+			}
+			log.info("prepConfig: exit: resultList.size: {}", prepConfig.size());
+			AppBase.setPoolSize(prepConfig.size());
 		}
-		log.info("prepConfig: exit: resultList.size: {}", resultList.size());
-		return resultList;
+		return prepConfig;
 	}
 
 	@Trace
@@ -158,6 +178,25 @@ public class ExtractMetrics {
 			AppAPI apiOnlyClient = new AppAPI(copierConfig.getSourceKeys());
 			log.debug("runProperQuery: apiOnlyClient");
 			result = apiOnlyClient.metricData(metricConfig);
+		}
+		log.debug("runProperQuery: exit");
+		return result;
+	}
+
+	public Mono<List<MetricDataModel>> queryMetricData(MetricConfig metricConfig) throws Exception {
+		Mono<List<MetricDataModel>> result;
+		String configType = metricConfig.getConfigType();
+		if (configType.equals(AppConfig.TYPE_APP_HOST)) {
+			AppHostAPI apiHostClient = new AppHostAPI(copierConfig.getSourceKeys(), false);
+			result = apiHostClient.metricDataMono(metricConfig);
+		} else if (configType.equals(AppConfig.TYPE_APP_INSTANCE)) {
+			AppInstanceAPI apiInstanceClient = new AppInstanceAPI(copierConfig.getSourceKeys(), false);
+			log.debug("runProperQuery: apiInstanceClient");
+			result = apiInstanceClient.metricDataMono(metricConfig);
+		} else {
+			AppAPI apiOnlyClient = new AppAPI(copierConfig.getSourceKeys(), false);
+			log.debug("runProperQuery: apiOnlyClient");
+			result = apiOnlyClient.metricDataMono(metricConfig);
 		}
 		log.debug("runProperQuery: exit");
 		return result;

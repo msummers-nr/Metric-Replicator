@@ -26,10 +26,15 @@ targetCompatibility = 1.8
 
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter:2.0.0.RELEASE'
+	compile 'org.springframework.boot:spring-boot-starter-webflux:2.0.0.RELEASE'
     compile 'com.squareup.okhttp3:okhttp:3.9.0'
     compile "com.opencsv:opencsv:4.0"
     compile 'com.typesafe:config:1.0.2'
     compile group: 'org.json', name: 'json', version: '20180130'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.4'
     compile 'com.newrelic.agent.java:newrelic-api:3.46.0'
+	// Linux ONLY!
+    // http://netty.io/wiki/native-transports.html
+	compile 'io.netty:netty-transport-native-epoll:4.1.22.Final'
+	compile 'io.netty:netty-transport-native-unix-common:4.1.22.Final'
 }

@@ -29,11 +29,11 @@ public class ParserToMetric {
 
 	private static ObjectMapper objectMapper = new ObjectMapper();
 
-	public static ArrayList<MetricDataModel> fromReader(Reader reader, MetricConfig metricConfig) {
+	public static ArrayList<MetricDataModel> fromString(String stringResponse, MetricConfig metricConfig) {
 		ArrayList<MetricDataModel> result = new ArrayList<>();
 		try {
 			String metricType = metricConfig.getMetricType();
-			JsonNode jsonTree = objectMapper.readTree(reader);
+			JsonNode jsonTree = objectMapper.readTree(stringResponse);
 			JsonNode rootNode = jsonTree.get(metricType);
 
 			JsonNode metricsNotFound = rootNode.get("metrics_not_found");
@@ -45,12 +45,6 @@ public class ParserToMetric {
 			result = getMetrics(metricConfig, metrics);
 		} catch (Exception e) {
 			log.error("fromReader: {}", e.getMessage());
-		} finally {
-			try {
-				reader.close();
-			} catch (Exception e) {
-				log.error("fromReader: {}", e.getMessage());
-			}
 		}
 		return result;
 	}
@@ -59,7 +53,8 @@ public class ParserToMetric {
 		ArrayList<MetricDataModel> metricList = new ArrayList<>();
 		if (metrics.isArray())
 			for (JsonNode node : metrics) {
-				String fullName = node.get("name").asText();
+				String fullName = node.get("name")
+				      .asText();
 				String shortName = metricConfig.getShortName(fullName);
 				MetricDataModel metric = new MetricDataModel(metricConfig, fullName, shortName);
 				metricList.add(metric);
@@ -84,7 +79,8 @@ public class ParserToMetric {
 		// FIXME
 		Date dReturn = null;
 		try {
-			String sTo = timeslice.get("to").asText();
+			String sTo = timeslice.get("to")
+			      .asText();
 			dReturn = df.parse(sTo);
 		} catch (Exception pe) {
 			log.debug("getTimeSliceDate: {}", pe.getMessage());
@@ -98,7 +94,8 @@ public class ParserToMetric {
 		Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
 		while (fields.hasNext()) {
 			Map.Entry<String, JsonNode> entry = fields.next();
-			timeSliceModel.addValue(entry.getKey(), entry.getValue().asDouble());
+			timeSliceModel.addValue(entry.getKey(), entry.getValue()
+			      .asDouble());
 		}
 
 		// Iterator<String> iter = jValues.keys();
@@ -158,13 +155,14 @@ public class ParserToMetric {
 	}
 
 	public static ArrayList<MetricDataModel> strToMetricData(String sResponse, MetricConfig metricConfig) {
+		log.trace("strToMetricData: response: {}", sResponse);
 		String sJsonRoot = metricConfig.getMetricType();
 		JSONObject jResponse = new JSONObject(sResponse);
 		JSONObject jMetricData = jResponse.getJSONObject(sJsonRoot);
 		JSONArray jMetricsNotFound = jMetricData.getJSONArray("metrics_not_found");
 		for (int i = 0; i < jMetricsNotFound.length(); i++) {
 			String sMetric = jMetricsNotFound.getString(i);
-			log.error("Metric not found: " + sMetric);
+			log.error("Metric not found: {}", sMetric);
 		}
 		JSONArray jMetricArr = jMetricData.getJSONArray("metrics");
 		return parseMetricArr(metricConfig, jMetricArr);

@@ -10,33 +10,35 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 public class Util {
 
 	private static final Logger log = LoggerFactory.getLogger(Util.class);
-	
+
 	public static final String URL_SCHEME = "https";
 
 	public static final MediaType JSON_UTF8 = MediaType.parse("application/json; charset=utf-8");
 	public static final MediaType JSON_ONLY = MediaType.parse("application/json");
 
 	public static Response callSync(OkHttpClient client, Request req) throws IOException {
-		log.info("callSync: enter");
+		log.debug("callSync: enter");
 		// Synchronous call
-		Response rsp = client.newCall(req).execute();
+		Response rsp = client.newCall(req)
+		      .execute();
 		if (!rsp.isSuccessful()) {
 			log.error("Error Message: " + rsp.message());
 			throw new IOException("Bad Status Code: " + rsp);
 		}
-		log.info("callSync: exit");
+		log.debug("callSync: exit");
 		return rsp;
 	}
 
 	public static Builder startBuilder(String host, String segment) {
-		Builder urlBuilder = new HttpUrl.Builder()
-			.scheme(URL_SCHEME)
-			.host(host)
-			.addPathSegments(segment);
+		Builder urlBuilder = new HttpUrl.Builder().scheme(URL_SCHEME)
+		      .host(host)
+		      .addPathSegments(segment);
 		return urlBuilder;
 	}
 
@@ -50,10 +52,10 @@ public class Util {
 
 	public static Request createRequest(Builder urlBuilder, String apiKey) {
 		// Create the request
-		Request req = new Request.Builder()
-			.url(urlBuilder.build())
-			.addHeader("X-Api-Key", apiKey)
-			.build();
+		Request req = new Request.Builder().url(urlBuilder.build())
+		      .addHeader("X-Api-Key", apiKey)
+		      .build();
 		return req;
 	}
+
 }
