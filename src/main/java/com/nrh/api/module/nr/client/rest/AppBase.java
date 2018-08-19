@@ -71,19 +71,39 @@ public abstract class AppBase {
 
 	public ArrayList<MetricDataModel> metricData(MetricConfig metricConfig, String segment) throws IOException {
 		log.debug("metricData: enter");
-		Builder urlBuilder = Util.startBuilder(URL_HOST, segment);
+		// Builder urlBuilder = Util.startBuilder(URL_HOST, segment);
+
+		// Create the URL with the proper path and post value
+		HttpUrl httpUrl = new HttpUrl.Builder()
+			.scheme(Util.URL_SCHEME)
+			.host(URL_HOST)
+			.addPathSegments(segment)
+			.build();
+		
+		FormBody.Builder formBody = new FormBody.Builder();
 
 		log.debug("metricData: getMetricNameList");
 		Collection<String> metricNameList = metricConfig.getMetricNameList();
 		if (metricNameList != null) {
 			for (String metricName : metricNameList) {
-				urlBuilder.addEncodedQueryParameter("names[]", metricName);
+				formBody.add("names[]", metricName);
+				// urlBuilder.addEncodedQueryParameter("names[]", metricName);
 			}
 		}
+		
+		// Make a POST request
+		Request req = new Request.Builder()
+			.url(httpUrl)
+			.addHeader("X-Api-Key", keys.getRestKey())
+			.post(formBody.build())
+			.build();
+
 		log.debug("metricData: url built");
 
 		// Reader reader = getAPIReader(urlBuilder, keys.getRestKey());
-		String response = callAPI(urlBuilder, keys.getRestKey());
+		// String response = callAPI(urlBuilder, keys.getRestKey());
+		Response rsp = Util.callSync(client, req);
+		String response = rsp.body().string();
 		log.debug("metricData: callAPI");
 
 		metricConfig.setMetricType(MetricConfig.TYPE_METRIC_DATA);
